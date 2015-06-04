@@ -1,0 +1,26 @@
+==================================================================
+Prerequisites
+==================================================================
+
+1. Make sure you have the Qt SDK installed and working.
+
+==================================================================
+Building
+==================================================================
+
+From the command line, in the root directory, run the following
+commands:
+
+1. cd dev
+2. qmake
+3. make
+
+Alternatively, use QtCreator and build the application from the IDE.
+
+==================================================================
+Installing
+==================================================================
+
+TODO
+
+Under Symbian you need to have Qt already installed on the device.

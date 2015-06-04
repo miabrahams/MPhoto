@@ -1,0 +1,29 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-07-05T13:30:00+03:00
+
+====== Command Line Parameters ======
+
+**--fullscreen, -f**
+start in fullscreen mode (this is the default)
+
+**--window**
+start in a window (not in fullscreen)
+
+**--install-dir=<dir>**
+get resource files from <dir> instead of the default directory
+
+**--multitouch, -m**
+enable multitouch support (default on Windows)
+
+**--no-multitouch**
+disable multitouch support (default on Linux and Symbian)
+
+**--no-transition**
+disable the transition from one image to another
+
+**--help, -h**
+print a short help
+
+**--version, -v**
+print the version number

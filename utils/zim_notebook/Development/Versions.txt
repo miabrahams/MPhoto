@@ -1,0 +1,67 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-07-08T14:55:43+03:00
+
+====== Versions ======
+
+**1.12**
+- added option to disable animations
+- added option to show/hide file name on thumbnail page
+- thumbnail size can be changed by holding ctrl and scrolling the mouse wheel
+- improved antialiasing of images at least on Linux when the image is not rotated
+- added drag&drop feature (drop images to MihPhoto window)
+- replaced png icons with svg icons and allow the UI to scale automatically based on dpi
+- fixed sync bug when waiting for the thumbnail load thread to finish
+**1.11**
+- fixed exif orientation
+- reduced CPU utilisation when idle
+- highlight menu under mouse cursor (thanks to Pascal)
+- added animation when switching between image and folder view (thanks to Pascal)
+- close picture by zooming out (thanks to Pascal)
+- fixed compilation with visual studio compiler
+- fixed scrolling in directory view
+- fixed moving to the next image after an image was deleted
+- fixed keyboard shortcuts
+**1.10**
+- added touch-friendly configuration screen
+**1.09**
+- hide mouse cursor when not used
+- new keyboard shortcuts (L/R for rotating the image left/right, DEL to send a file to trash)
+- fixed EXIF orientation bug
+- made the project compatible with Qt 5.1
+**1.08**
+- added options to customize how thumbnails are displayed (spacing, scaling...)
+- added option to configure image sliding speed
+- added options to select the position and the font size of the file name
+- changed icons
+**1.07**
+- fixed bug: the application didn't start with a custom directory
+- the application can now be operated with the mouse even if multi-touch mode is active
+**1.06**
+- added folders in directory view
+- ability to scroll the top icon bar if it's wider than the screen
+- added "fit to width/height" buttons (enable them from the configuration dialog)
+- fixed bug where the zoom was not correct when starting the application in fullscreen with an image
+**1.05**
+- fixed scrolling problem in directory view
+- priority load visible thumbnails
+- show correct icon in linux taskbar
+- reimplement two-finger zoom and rotate
+**1.04**
+- double click zoom
+- removed excessive scrolling
+- when switching to folder view, select the picture from image view
+- remove double click fullscreen
+- scroll speed should be computed based on time too for folder view
+- change folder view icon
+- remove back/forward buttons, remove zoom buttons
+- add configure buttons
+- add configuration dialog
+- scroll bar
+- single touch zoom bug
+- update documentation
+**1.03**
+- fixed bug in thumbnail view
+**1.02**
+- added thumbnail view
+- updated documentation

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="48"
+   height="48"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="application-exit.svg">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1680"
+     inkscape:window-height="1008"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="13.906433"
+     inkscape:cx="25.826181"
+     inkscape:cy="24.927016"
+     inkscape:window-x="1920"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <path
+     style="fill:#e6e6e6;stroke:none"
+     d="M 11,7.5 C 1.68488,12.1576 -0.0633407,26.54 4.16667,35 9.49938,45.6654 23.4231,50.2687 34,44.8333 43.4699,39.9669 47.8184,29.0485 45.1667,19 43.9433,14.3642 39.145,5.26894 33,7.16667 30.4387,7.95765 29.775055,9.7600992 30.931455,12.208999 32.652055,15.852699 35.6784,18.8142 36.6667,23 38.4545,30.5721 30.505,38.7297 23,38 15.2689,37.2484 8.90827,28.4201 12,21 13.3558,17.746 16.355218,14.748527 17.186118,11.424727 18.188418,7.4157267 14.2273,5.88637 11,7.5 z"
+     id="path4"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ssscssscccs" />
+  <rect
+     style="fill:#e6e6e6"
+     id="rect2993"
+     width="8.4852829"
+     height="24.305298"
+     x="19.757359"
+     y="1.5466797"
+     ry="3.6118052" />
+</svg>

@@ -1,0 +1,7 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-07-05T13:41:51+03:00
+
+====== License ======
+
+MihPhoto was orignially developed by Mihai Paslariu in 2010-2012. This software is licensed under the General Public License (GLP). See the COPYING file in the main application folder for the full text of the lincense.

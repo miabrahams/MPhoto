@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/"/>
+	<qresource prefix="/icons">
+		<file alias="application-exit.svg">../icons/application-exit.svg</file>
+		<file alias="document-open.svg">../icons/document-open.svg</file>
+		<file alias="go-first.svg">../icons/go-first.svg</file>
+		<file alias="go-last.svg">../icons/go-last.svg</file>
+		<file alias="separator.svg">../icons/separator.svg</file>
+		<file alias="view-fullscreen.svg">../icons/view-fullscreen.svg</file>
+		<file alias="zoom-fit-best.svg">../icons/zoom-fit-best.svg</file>
+		<file alias="zoom-fit-width.svg">../icons/zoom-fit-width.svg</file>
+		<file alias="zoom-fit-height.svg">../icons/zoom-fit-height.svg</file>
+		<file alias="zoom-original.svg">../icons/zoom-original.svg</file>
+		<file alias="zoom-out.svg">../icons/zoom-out.svg</file>
+		<file alias="zoom-in.svg">../icons/zoom-in.svg</file>
+		<file alias="object-rotate-left.svg">../icons/object-rotate-left.svg</file>
+		<file alias="object-rotate-right.svg">../icons/object-rotate-right.svg</file>
+		<file alias="folder-photos.svg">../icons/folder-photos.svg</file>
+		<file alias="position.svg">../icons/position.svg</file>
+		<file alias="settings.svg">../icons/settings.svg</file>
+		<file alias="scroll-indicator.svg">../icons/scroll-indicator.svg</file>
+		<file alias="scroll-indicator-dark.svg">../icons/scroll-indicator-dark.svg</file>
+	</qresource>
+    <qresource prefix="/images">
+		 <file alias="back.png">../images/back.png</file>
+		 <file alias="folder.svg">../images/folder.svg</file>
+		 <file alias="folder-dark.svg">../images/folder-dark.svg</file>
+	</qresource>
+</RCC>

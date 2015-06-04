@@ -1,0 +1,14 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2013-07-05T13:44:22+03:00
+
+====== index ======
+
+[[Introduction]]
+[[Command Line Parameters]]
+[[Basic Controls]]
+[[Top Menu]]
+[[Folder View]]
+[[License]]
+[[Limitations]]
+[[Development:Versions|Versions]]
