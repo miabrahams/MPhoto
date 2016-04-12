@@ -130,7 +130,7 @@ private:
 
 	void _resetUserActionsParameters( void );
 	void _resetTouchParams( void );
-	void _loadImage( int k, QImage ** dest, double * zoom_dest );
+    void loadImage( int index, ImageWithInfo &i );
     void resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
     void resetFitZoomWithRotation( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
 	void _moveForward( void );

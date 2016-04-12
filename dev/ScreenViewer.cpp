@@ -1108,19 +1108,19 @@ void ScreenViewer::onTimer( void )
 * PRIVATE METHODS
 *******************************************************************************/
 
-void  ScreenViewer::_loadImage( int k, QImage ** dest, double * zoom_dest )
+void  ScreenViewer::loadImage( int index, ImageWithInfo &i )
 {
-	*dest = NULL;
-	*zoom_dest = 1.0;
-	if ( k < 0 || k >= m_files.size() )
+    i.image = NULL;
+    i.zoom = 1.0;
+    if ( index < 0 || index >= m_files.size() )
 		return;
 
 	ImageLoadItem ili;
-	ili.name = m_files[k];
-	ili.destination = dest;
+    ili.name = m_files[index];
+    ili.destination = &i.image;
 	ili.w = width();
 	ili.h = height();
-	*zoom_dest = 0.0;
+    i.zoom = 0.0;
 	ili.force_fit_in_size = false;
 	_load_thread.addLoadImage(ili);
 }
@@ -1293,9 +1293,9 @@ void ScreenViewer::_reloadAll( void )
 	_current.free();
 	_next.free();
 
-	_loadImage( m_current_index, &_current.image, &_current.zoom );
-	_loadImage( m_current_index-1, &_previous.image, &_previous.zoom );
-	_loadImage( m_current_index+1, &_next.image, &_next.zoom );
+    loadImage( m_current_index,   _current);
+    loadImage( m_current_index-1, _previous);
+    loadImage( m_current_index+1, _next);
 }
 
 void ScreenViewer::_moveForward( void )
@@ -1307,7 +1307,7 @@ void ScreenViewer::_moveForward( void )
     _previous = _current;
     _current = _next;
 
-	_loadImage( m_current_index+1, &_next.image, &_next.zoom );
+    loadImage( m_current_index+1, _next );
     emit indexChanged( m_current_index );
 }
 
@@ -1320,7 +1320,7 @@ void ScreenViewer::_moveBack( void )
     _next = _current;
     _current = _previous;
 
-	_loadImage( m_current_index-1, &_previous.image, &_previous.zoom );
+    loadImage( m_current_index-1, _previous );
     emit indexChanged( m_current_index );
 }
 
@@ -1436,13 +1436,13 @@ void ScreenViewer::_deleteCurrentFile( void )
                         m_current_index--;
                         _current = _previous;
                         if ( m_current_index > 0 )
-                                _loadImage( m_current_index-1, &_previous.image, &_previous.zoom );
+                                loadImage( m_current_index-1, _previous );
                         else
                                 _previous.clear();
                 } else {
                         _current = _next;
                         if ( m_current_index < m_files.size() - 1 )
-                                _loadImage( m_current_index+1, &_next.image, &_next.zoom );
+                                loadImage( m_current_index+1, _next );
                         else
                                 _next.clear();
                 }
