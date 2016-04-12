@@ -27,12 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "TouchUI.h"
 #include "ImageWithInfo.h"
 
-enum FitZoomMode
-{
-	ZOOM_FIT_WIDTH,
-	ZOOM_FIT_HEIGHT,
-	ZOOM_FIT
-};
 /**
  * UI state for viewing an image.
  */
@@ -79,6 +73,7 @@ public slots:
 
 	void forward( void );
 	void back( void );
+    void gotoIndex( int new_index );
 	void first( void );
 	void last( void );
 	void changeUI( void );
@@ -136,8 +131,8 @@ private:
 	void _resetUserActionsParameters( void );
 	void _resetTouchParams( void );
 	void _loadImage( int k, QImage ** dest, double * zoom_dest );
-	double _computeFitZoom( QImage * img, FitZoomMode zoom_mode = ZOOM_FIT );
-	double _computeFitZoomWithRotation( QImage * img, FitZoomMode zoom_mode = ZOOM_FIT );
+    void resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
+    void resetFitZoomWithRotation( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
 	void _moveForward( void );
 	void _moveBack( void );
 	void _reloadAll( void );

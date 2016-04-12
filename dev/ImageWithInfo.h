@@ -23,54 +23,69 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QImage>
 #include <QTransform>
+#include <QSize>
 
-struct ImageWithInfo
+
+enum FitZoomMode
 {
-	QImage * image;
-	QImage * small_image;
-	double zoom;
-	int posx,posy;
-	double rotation;
+    ZOOM_FIT_WIDTH,
+    ZOOM_FIT_HEIGHT,
+    ZOOM_FIT
+};
 
-	inline ImageWithInfo( void )
-	{
-		image = small_image = NULL;
-		zoom = 1.0;
-		posx = posy = 0;
-		rotation = 0.0;
-	}
+class ImageWithInfo
+{
+public:
+    QImage * image = nullptr;
+    QImage * small_image = nullptr;
+    double zoom = 1.0;
+    int posx = 0;
+    int posy = 0;
+    double rotation = 0.0;
 
-        inline void clear( void )
-	{
-		image = small_image = 0;
-		posx = posy = 0;
-		zoom = 1.0;
-		rotation = 0.0;
-	}
+    inline void free( void )
+    {
+        delete image;
+        delete small_image;
+        clear();
+    }
 
-	inline void free( void )
-	{
-		delete image;
-		delete small_image;
-		clear();
-	}
+    inline void clear( void )
+    {
+        image = small_image = 0;
+        zoom = 1.0;
+        recenter();
+    }
 
-	inline void setZoom( double f )
-	{
-		zoom = f;
-		rotation = 0.0;
-		posx = posy = 0;
-	}
+    inline void setZoom( double f )
+    {
+        zoom = f;
+        rotation = 0.0;
+        posx = posy = 0;
+    }
 
-	inline int width( void )
-	{
-		return image != NULL ? image->width() : 0;
-	}
+    inline int width( void )
+    {
+        return image != NULL ? image->width() : 0;
+    }
 
-	inline int height( void )
-	{
-		return image != NULL ? image->height() : 0;
-	}
+    inline int height( void )
+    {
+        return image != NULL ? image->height() : 0;
+    }
+
+    inline void recenter()
+    {
+        posx = posy = 0;
+        rotation = 0;
+    }
+
+
+    double computeFitZoomWithRotation( QSize screenSize, FitZoomMode zoom_mode = ZOOM_FIT );
+    double computeFitZoom( QSize screenSize, FitZoomMode zoom_mode = ZOOM_FIT );
+    void rotate(int degrees, QSize screenSize);
+    void rotateLeft(QSize screenSize);
+    void rotateRight(QSize screenSize);
 };
 
 #endif

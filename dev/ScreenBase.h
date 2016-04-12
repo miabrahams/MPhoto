@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SCREENBASE_H
 
 #include <QtGui>
+#include <QSize>
 #include "TouchMouseControl.h"
 
 /**
@@ -108,6 +109,11 @@ public:
 		_sb_width = w;
 		_sb_height = h;
 	}
+
+    inline QSize size()
+    {
+        return QSize(_sb_width, _sb_height);
+    }
 	
 	inline QStringList & getFiles( void )
 	{

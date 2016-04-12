@@ -26,6 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "ImageLoadThread.h"
 #include "TouchUI.h"
 
+/**
+ * UI state for browsing files.
+ */
+
 class ScreenDirectory : public ScreenBase
 {
 Q_OBJECT

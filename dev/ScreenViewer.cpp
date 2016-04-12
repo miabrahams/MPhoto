@@ -63,10 +63,9 @@ void ScreenViewer::forward( void )
 	if ( !_changing && m_current_index < m_files.size() - 1 && _load_thread.isIdle() )
 	{
 		_allow_drag = false;
-		_current.zoom = _computeFitZoom( _current.image );
-		_next.zoom = _computeFitZoom( _next.image );
-		_current.posx = _current.posy = 0;
-		_current.rotation = 0.0;
+        resetFitZoom( _current );
+        resetFitZoom( _next );
+        _current.recenter();
 		emit startTimer();
 
 		_drag_offset = width();
@@ -80,10 +79,9 @@ void ScreenViewer::back( void )
 	if ( !_changing && m_current_index > 0 && _load_thread.isIdle() )
 	{
 		_allow_drag = false;
-		_current.zoom = _computeFitZoom( _current.image );
-		_previous.zoom = _computeFitZoom( _previous.image );
-		_current.posx = _current.posy = 0;
-		_current.rotation = 0.0;
+        resetFitZoom( _current );
+        resetFitZoom( _previous );
+        _current.recenter();
 		emit startTimer();
 
 		_drag_offset = -width();
@@ -92,30 +90,27 @@ void ScreenViewer::back( void )
 	}
 }
 
-void ScreenViewer::first( void )
+void ScreenViewer::gotoIndex( int new_index )
 {
-	if ( !_changing && m_current_index != 0 && _load_thread.isIdle() )
+    if ( !_changing && m_current_index != new_index && _load_thread.isIdle() )
 	{
 		_current.rotation = 0.0;
 		_allow_drag = false;
 		_drag_offset = 0;
-		m_current_index = 0;
+        m_current_index = new_index;
 		_reloadAll();
-		emit indexChanged(m_current_index);
+        emit indexChanged( new_index );
 	}
 }
 
 void ScreenViewer::last( void )
 {
-	if ( !_changing && m_current_index != m_files.count()-1 && _load_thread.isIdle() )
-	{
-		_current.rotation = 0.0;
-		_allow_drag = false;
-		_drag_offset = 0;
-		m_current_index = m_files.count()-1;
-		_reloadAll();
-		emit indexChanged(m_current_index);
-	}
+    gotoIndex(m_files.count()-1);
+}
+
+void ScreenViewer::first( void )
+{
+    gotoIndex(0);
 }
 
 void ScreenViewer::changeUI( void )
@@ -157,9 +152,8 @@ void ScreenViewer::zoomToFit( FitZoomMode zoom_mode )
 	if ( _current.image == NULL || _changing )
 		return;
 
-	_current.rotation = 0.0;
-	_current.posx = _current.posy = 0;
-	_current.zoom = _computeFitZoomWithRotation(_current.image, zoom_mode);
+    _current.recenter();
+    resetFitZoomWithRotation(_current, zoom_mode);
 	update();
 }
 
@@ -168,9 +162,8 @@ void ScreenViewer::zoomToOriginalSize( void )
 	if ( _current.image == NULL || _changing )
 		return;
 
-	_current.zoom = 1.0;
-	_current.rotation = 0.0;
-	_current.posx = _current.posy = 0;
+    _current.zoom = 1.0;
+    _current.recenter();
 	update();
 }
 
@@ -195,32 +188,16 @@ void ScreenViewer::rotateLeft( void )
 	if ( _current.image == NULL || _changing )
 		return;
 
-	double fz = _computeFitZoomWithRotation(_current.image);
-	int r = (int)_current.rotation;
-	r = r/90*90 + ( r % 90 < 45 ? 0 : 90 ) + 90;
-	if ( r < 0 ) r = r + 360 * (abs(r)/360 + 1);
-	if ( r >= 360 ) r = r - 360 * r/360;
-	_current.rotation = (double)r;
-	double zdif = fz - _current.zoom;
-	if ( fabs(zdif) < 0.01 )
-		_current.zoom = _computeFitZoomWithRotation(_current.image);
+    _current.rotateLeft(size());
 	update();
 }
 
 void ScreenViewer::rotateRight( void )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.image == NULL || _changing )
 		return;
 
-	double fz = _computeFitZoomWithRotation(_current.image);
-	int r = (int)_current.rotation;
-	r = r/90*90 + ( r % 90 < 45 ? 0 : 90 ) - 90;
-	if ( r < 0 ) r = r + 360 * (abs(r)/360 + 1);
-	if ( r >= 360 ) r = r - 360 * r/360;
-	_current.rotation = (double)r;
-	double zdif = fz - _current.zoom;
-	if ( fabs(zdif) < 0.01 )
-		_current.zoom = _computeFitZoomWithRotation(_current.image);
+    _current.rotateRight(size());
 	update();
 }
 
@@ -248,9 +225,7 @@ void ScreenViewer::setView( QPoint pos )
 void ScreenViewer::resetView()
 {
     //_current.zoom = computeCurrentFitZoom();
-    _current.rotation = 0.0;
-    _current.posx = 0;
-    _current.posy = 0;
+    _current.recenter();
 }
 
 /*******************************************************************************
@@ -335,9 +310,8 @@ void ScreenViewer::onPaint( QPainter & painter )
 
 	if ( _current.image )
         {
-		double fit_zoom = _computeFitZoom( _current.image );
 		if ( _current.zoom == 0.0 )
-			_current.zoom = fit_zoom;
+            resetFitZoom( _current );
                 QTransform tr = _getCurrentTransform();
 
 		bool alternative_smooth = false;
@@ -396,7 +370,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 	if ( _next.image && _drag_offset < 0 )
 	{
 		if ( _next.zoom == 0.0 )
-			_next.zoom = _computeFitZoom( _next.image );
+            resetFitZoom( _next );
 		int sw = (int)( (double)_next.width() * _next.zoom );
 		int sh = (int)( (double)_next.height() * _next.zoom );
 		int x = cx - sw/2 + _current.posx + _drag_offset + width();
@@ -408,7 +382,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 	if ( _previous.image && _drag_offset > 0 )
 	{
 		if ( _previous.zoom == 0.0 )
-			_previous.zoom = _computeFitZoom( _previous.image );
+            resetFitZoom( _previous );
 		int sw = (int)( (double)_previous.width() * _previous.zoom );
 		int sh = (int)( (double)_previous.height() * _previous.zoom );
 		int x = cx - sw/2 + _current.posx + _drag_offset - width();
@@ -487,7 +461,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 
 		if ( _current.image != NULL )
 		{
-			double fit_zoom = _computeFitZoomWithRotation(_current.image);
+            double fit_zoom = _current.computeFitZoomWithRotation(size());
 			double min_zoom = ( fit_zoom < 1.0 ? fit_zoom : 1.0 );
 			double max_zoom = g_config.max_zoom;
 			double pos = ( _current.zoom - min_zoom ) / ( max_zoom - min_zoom );
@@ -508,9 +482,9 @@ void ScreenViewer::onResize( void )
 {
 	if ( _current.image != NULL && _current.posx == 0 && _current.posy == 0 )
 	{
-		_previous.zoom = _computeFitZoom( _previous.image );
-		_current.zoom = _computeFitZoomWithRotation( _current.image );
-		_next.zoom = _computeFitZoom( _next.image );
+        resetFitZoom( _previous );
+        resetFitZoomWithRotation(_current);
+        resetFitZoom( _next );
 	}
 }
 
@@ -631,11 +605,10 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
 	if ( !_two_fingers && abs(dx) > g_config.drag_sensitivity )
 	{
 		_allow_drag = true;
-		_current.posx = _current.posy = 0;
-		_current.rotation = 0.0;
-		_current.zoom = _computeFitZoom( _current.image );
-		_previous.zoom = _computeFitZoom( _previous.image );
-		_next.zoom = _computeFitZoom( _next.image );
+        _current.recenter();
+        resetFitZoom( _current );
+        resetFitZoom( _previous );
+        resetFitZoom( _next );
 		emit startTimer();
 	}
 
@@ -882,7 +855,7 @@ void ScreenViewer::onMouseMove( QEvent * event )
 	{
 		_allow_zoom = _allow_zoom || ( _show_ui && mouse_in_zoom_zone && !_allow_drag );
 		
-		double fit_zoom = _computeFitZoomWithRotation(_current.image);
+        double fit_zoom = _current.computeFitZoomWithRotation(size());
 		double min_zoom = ( fit_zoom < 1.0 ? fit_zoom : 1.0 );
 		double max_zoom = g_config.max_zoom;
 		
@@ -938,7 +911,7 @@ void ScreenViewer::onMouseMove( QEvent * event )
 			if ( abs(dx) > g_config.drag_sensitivity )
 			{
 				_allow_drag = true;
-				_current.zoom = _computeFitZoom( _current.image );
+                resetFitZoom( _current );
 				_current.posx = _current.posy = 0;
 				_current.rotation = 0.0;
 			}
@@ -1082,9 +1055,8 @@ void ScreenViewer::setZoom( double zoom )
 
 double ScreenViewer::computeCurrentFitZoom()
 {
-	return _computeFitZoom(_current.image);
+    return _current.computeFitZoom(size());
 }
-
 
 bool ScreenViewer::isIdle()
 {
@@ -1153,53 +1125,14 @@ void  ScreenViewer::_loadImage( int k, QImage ** dest, double * zoom_dest )
 	_load_thread.addLoadImage(ili);
 }
 
-double ScreenViewer::_computeFitZoom( QImage * img, FitZoomMode zoom_mode )
+void ScreenViewer::resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode )
 {
-	if ( img == NULL ) return 1.0f;
-	double xz = (double)width() / (double)img->width();
-	double yz = (double)height() / (double)img->height();
-	double z = 1.0;
-	switch ( zoom_mode )
-	{
-		case ZOOM_FIT_WIDTH:
-			z = xz;
-			break;
-		case ZOOM_FIT_HEIGHT:
-			z = yz;
-			break;
-		default:
-			z = ( xz < yz ? xz : yz );
-			break;
-	}
-	return z > 1.0f ? 1.0f : z;
+    i.zoom = i.computeFitZoom(size(), zoom_mode);
 }
 
-double ScreenViewer::_computeFitZoomWithRotation( QImage * img, FitZoomMode zoom_mode )
+void ScreenViewer::resetFitZoomWithRotation( ImageWithInfo &i, FitZoomMode zoom_mode )
 {
-	if ( img == NULL ) return 1.0f;
-	double rot = _current.rotation * M_PI / 180.0;
-	qreal c = (qreal)cos( rot );
-	qreal s = (qreal)sin( rot );
-	double w = (double)img->width();
-	double h = (double)img->height();
-	double img_w = fabs(w * c + h * s);
-	double img_h = fabs(w * s + h * c);
-	double xz = (double)width() / img_w;
-	double yz = (double)height() / img_h;
-	double z = 1.0;
-	switch ( zoom_mode )
-	{
-		case ZOOM_FIT_WIDTH:
-			z = xz;
-			break;
-		case ZOOM_FIT_HEIGHT:
-			z = yz;
-			break;
-		default:
-			z = ( xz < yz ? xz : yz );
-			break;
-	}
-	return z > 1.0f ? 1.0f : z;
+    i.zoom = i.computeFitZoomWithRotation(size(), zoom_mode);
 }
 
 void ScreenViewer::_handleTouchAction( TouchUI::UIAction action )
@@ -1369,34 +1302,26 @@ void ScreenViewer::_moveForward( void )
 {
 	_previous.free();
 	m_current_index++;
-	_current.posx = _current.posy = 0;
-	_current.rotation = 0.0;
+    _current.recenter();
 
-	_previous = _current;
-	_previous.zoom = _current.zoom;
-
-	_current = _next;
-	_current.zoom = _next.zoom;
+    _previous = _current;
+    _current = _next;
 
 	_loadImage( m_current_index+1, &_next.image, &_next.zoom );
-	emit indexChanged(m_current_index);
+    emit indexChanged( m_current_index );
 }
 
 void ScreenViewer::_moveBack( void )
 {
 	_next.free();
 	m_current_index--;
-	_current.posx = _current.posy = 0;
-	_current.rotation = 0.0;
+    _current.recenter();
 
-	_next = _current;
-	_next.zoom = _current.zoom;
-
-	_current = _previous;
-	_current.zoom = _previous.zoom;
+    _next = _current;
+    _current = _previous;
 
 	_loadImage( m_current_index-1, &_previous.image, &_previous.zoom );
-	emit indexChanged(m_current_index);
+    emit indexChanged( m_current_index );
 }
 
 QTransform ScreenViewer::_getCurrentTransform( void )
@@ -1521,10 +1446,9 @@ void ScreenViewer::_deleteCurrentFile( void )
                         else
                                 _next.clear();
                 }
-                _current.zoom = _computeFitZoom( _current.image );
+                resetFitZoom(_current);
 	}
-	_current.posx = _current.posy = 0;
-	_current.rotation = 0.0;
+    _current.recenter();
 	update();
 }
 
