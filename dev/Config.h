@@ -25,7 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QColor>
 #include <QString>
 
-#define CONFIG_FILE		".mihphoto.config"
+/**
+ *  Class containing configuration options. Does storing/loading. (Replace with QSettings?)
+ */
+
+const auto CONFIG_FILE = ".mihphoto.config";
 
 struct Config
 {
@@ -96,9 +100,9 @@ private:
 };
 
 #ifdef __CONFIGURATION_MAIN__
-	Config g_config;
+    Config g_config; ///< Global configuration object
 #else
-	extern Config g_config;
+    extern Config g_config; ///< Global configuration object
 #endif
 
 #endif

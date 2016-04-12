@@ -26,6 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class ImageArea;
 
+/**
+ *  Main entry point for the program.
+ */
+
+
 class MainWindow : public QMainWindow
 {
 Q_OBJECT
@@ -65,7 +70,7 @@ private slots:
 	void about();
 	void changeFullscreen();
 	void showOrHideName();
-	void config();
+    void config(); // Show popup config dialog from menu
 	void hideCursor();
 	void showCursor();
 	void loadDroppedFile( QString name );

@@ -64,6 +64,11 @@ struct TouchUIItem
 	QSvgRenderer * image;
 	bool highlighted;
 };
+/**
+ * Touch UI layout engine. Allows a ScreenBase to store widgets with locations.
+ * Provides a single draw call to place them as requested, and an engine to
+ * retrieve the correct action to perform after the UI has been manipulated.
+ */
 
 class TouchUI
 {

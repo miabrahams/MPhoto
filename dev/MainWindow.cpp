@@ -151,7 +151,7 @@ void MainWindow::about()
 
 	QString name =
     "<p><b>MihPhoto</b> - Browse photos in a folder using the touchscreen.<br />"
-    "Copyright (C) 2010-2014 Mihai Paslariu<br />"
+    "Copyright (C) 2010-2013 Mihai Paslariu<br />"
     "Copyright (C) 2015 Michael Abrahams</p>"
     "<p>See the CREDITS file in the root directory for the complete list of persons that contributed to this software.</p>";
 

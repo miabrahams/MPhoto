@@ -33,6 +33,9 @@ enum FitZoomMode
 	ZOOM_FIT_HEIGHT,
 	ZOOM_FIT
 };
+/**
+ * UI state for viewing an image.
+ */
 
 class ScreenViewer : public ScreenBase
 {

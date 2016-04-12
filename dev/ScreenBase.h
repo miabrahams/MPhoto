@@ -24,6 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui>
 #include "TouchMouseControl.h"
 
+/**
+ * Base class for different UI states. (Settings screen, viewer screen, file browser...)
+ */
+
+
 class ScreenBase : public QObject
 {
 Q_OBJECT

@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDialog>
 #include <QVector>
 
+/**
+ * Popup dialog shown when clicking Options->Settings in the windowed menu.
+ */
+
 namespace Ui {
     class ConfigDialog;
 }
