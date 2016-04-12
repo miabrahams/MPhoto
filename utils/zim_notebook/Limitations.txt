@@ -8,12 +8,9 @@ MihPhoto has some limitations you should be aware of:
 
 * The application doesn't automatically detect and select the correct control mode (single-touch or multi-touch). You should specify a command line argument in order to switch between the two.
 * Usually, mouse controls don't work in multitouch mode. Sometimes you can use right click to select options from the menu but you cannot drag the image with the mouse in multitouch mode.
-* On Symbian, large images are not displayed at full resolution.
-* Versions newer than 1.05 were not tested on Symbian.
 
 MihPhoto was tested on the following devices and operating systems:
 
 * Acer 1825PT under Windows7 (multi-touch)
 * Desktop computer running OpenSuse 13.1 and Kubuntu 14.04 (keyboard and mouse)
-* Nokia 5800XM under Symbian S60v5 for MihPhoto versions before 1.05 (single-touch)
 

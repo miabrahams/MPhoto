@@ -21,6 +21,11 @@ Alternatively, use QtCreator and build the application from the IDE.
 Installing
 ==================================================================
 
-TODO
+-Windows-
+Use windeployqt in the \bin directory to package necessary dlls.
+The directory is self-contained and can be zipped and distributed.
+The user must install the appropriate MSVC runtime.
 
-Under Symbian you need to have Qt already installed on the device.
+
+-Linux-
+Simply run the executable.

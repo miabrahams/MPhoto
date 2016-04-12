@@ -49,15 +49,11 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 	app.addLibraryPath( app.applicationDirPath() );
 	g_config.load();
-	#if defined(Q_OS_SYMBIAN)
-		g_config.install_dir = ":";
-	#else
-		#ifdef DATADIR
-			g_config.install_dir = DATADIR;
-		#else
-			g_config.install_dir = app.applicationDirPath() + QDir::separator() + "..";
-		#endif
-	#endif
+#ifdef DATADIR
+  g_config.install_dir = DATADIR;
+#else
+  g_config.install_dir = app.applicationDirPath() + QDir::separator() + "..";
+#endif
 	QStringList args = app.arguments();
 	QString startfile = "";
 	bool fullscreen = true;

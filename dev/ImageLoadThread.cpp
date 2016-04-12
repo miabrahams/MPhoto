@@ -90,39 +90,11 @@ QImage * ImageLoadThread::_loadImage( QString name, int area_width, int area_hei
 		}
 		delete reader;
 	} else {
-		// limit the size of the image on Symbian
-		#ifdef Q_OS_SYMBIAN
-			// create image reader
-			QImageReader * reader = new QImageReader( fullname );
-			QSize size = reader->size();
-
-			double  area = (double)size.width() * (double)size.height();
-			double max_area = area_width * area_height;
-			if ( area > max_area )
-			{
-				double ratio = sqrt(max_area / area);
-				size.setWidth( (int)( (double)size.width() * ratio ) );
-				size.setHeight( (int)( (double)size.height() * ratio ) );
-			}
-
-			// actually load the image
-			img = new QImage(size, reader->imageFormat());
-			reader->setScaledSize( size );
-			if ( !reader->read(img) )
-			{
-				delete reader;
-				delete img;
-				return NULL;
-			}
-			delete reader;
-		#else
 			(void)area_width;
 			(void)area_height;
-
 			img = new QImage( fullname );
-		#endif
 	}
-	
+
 	// rotate the image
 	QImage * img2 = img;
 	if ( rotation != 0.0 )
@@ -135,7 +107,7 @@ QImage * ImageLoadThread::_loadImage( QString name, int area_width, int area_hei
 		*img2 = img->transformed( tr, g_config.smooth_images ? Qt::SmoothTransformation : Qt::FastTransformation );
 		delete img;
 	}
-	
+
 	return img2;
 }
 

@@ -56,13 +56,8 @@ MainWindow::MainWindow( QString startfile, bool fullscreen )
 		menuBar()->hide();
 		this->showFullScreen();
 	} else {
-		#if defined(Q_OS_SYMBIAN)
-			_maximized = true;
-			this->showMaximized();
-		#else
 			this->show();
 			_maximized = isMaximized();
-		#endif
 	}
 
 	if ( !startfile.isEmpty() )
@@ -131,10 +126,6 @@ void MainWindow::openDir()
 
 void MainWindow::about()
 {
-	#ifdef Q_OS_SYMBIAN
-	QString license = "<p>This program is is free software licensed under GPL. "
-			  "You can download its source code from its website.</p>";
-	#else
 	QString license = "<p>This program is free software: you can redistribute it and/or modify"
 			  "it under the terms of the GNU General Public License as published by"
 			  "the Free Software Foundation, either version 3 of the License, or"
@@ -147,7 +138,6 @@ void MainWindow::about()
 			  "<br /><br />"
 			  "You should have received a copy of the GNU General Public License"
 			  "along with this program. If not, see http://www.gnu.org/licenses/</p>";
-	#endif
 
 	QString name =
     "<p><b>MihPhoto</b> - Browse photos in a folder using the touchscreen.<br />"
@@ -165,11 +155,6 @@ void MainWindow::changeFullscreen()
 {
 	if ( this->isFullScreen() )
 	{
-		#if defined(Q_OS_SYMBIAN)
-		// force application to maximized on symbian
-		_maximized = true;
-		#endif
-
 		if ( _maximized )
 			this->showMaximized();
 		else

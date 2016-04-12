@@ -54,13 +54,5 @@ RESOURCES += \
 
 RC_FILE = MihPhoto.rc
 
-symbian {
-	RESOURCES = mihphoto.qrc
-	ICON = icon_symb.svg
-	#QT += network
-	#CONFIG += mobility
-	#MOBILITY = systeminfo
-	#symbian:TARGET.CAPABILITY = ReadDeviceData
-}
 #win32:CONFIG += console
 #DEFINES += DATADIR=\\\"@DATADIR@\\\"

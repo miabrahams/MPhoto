@@ -29,11 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <QtCore>
 
-/*
-#ifdef Q_OS_SYMBIAN
-#include <QSystemDeviceInfo>
-#endif
-*/
 Config::Config()
 {
 	loadDefaults();
@@ -73,33 +68,14 @@ void Config::loadDefaults( void )
 	disable_animations = false;
 	choose_ui_size = 0;
 	ui_size = 48;
-	allow_rotation = true;
+	allow_rotation = false;
+  multitouch = true;
+  max_zoom = 10.0;
 
-	#ifdef Q_OS_SYMBIAN
-		/*
-		QtMobility::QSystemDeviceInfo info;
-		QtMobility::QSystemDeviceInfo::InputMethodFlags dwFlags = info.inputMethodType();
-		multitouch = (dwFlags & QtMobility::QSystemDeviceInfo::MultiTouch) != 0;
-		*/
-		multitouch = false;
-		max_zoom = 2.0;
-
-		// try to guess the default image folder
-		last_open_dir = "E:/Images";
-		if ( !_dirExists(last_open_dir) )
-			last_open_dir = "C:/Images";
-		if ( !_dirExists(last_open_dir) )
-			last_open_dir = QDir::currentPath();
-	#else
-		multitouch = true;
-		max_zoom = 10.0;
-
-		// try to guess the default image folder
-		last_open_dir = QDir::homePath() + "/Pictures";
-		if ( !_dirExists(last_open_dir) )
+  // try to guess the default image folder
+  last_open_dir = QDir::homePath() + "/Pictures";
+  if ( !_dirExists(last_open_dir) )
 			last_open_dir = QDir::homePath();
-	#endif
-	
 	started_with_file = false;
 	disable_settings_dialog = false;
 	timer_duration = 30;
@@ -207,13 +183,10 @@ bool Config::load()
 				start_with_last_folder = _toBool(value);
 			else if ( key == "start_with_custom_folder" )
 				start_with_custom_folder = _toBool(value);
-			
-			#ifndef Q_OS_SYMBIAN
 			else if ( key == "max_zoom" )
 				max_zoom = value.toDouble();
 			else if ( key == "multitouch" )
 				multitouch = _toBool(value);
-			#endif
 
 			else if ( key == "last_dir" )
 				last_open_dir = value;
@@ -238,7 +211,6 @@ bool Config::load()
 				if ( z < thumb_zoom_min ) thumb_size = thumb_zoom_min;
 				if ( z > thumb_zoom_max ) thumb_size = thumb_zoom_max;
 			}
-			
 			else if ( key == "thumbnails_crop" )
 				thumbnails_crop = _toBool(value);
 			else if ( key == "thumbnails_square" )

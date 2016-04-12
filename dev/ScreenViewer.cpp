@@ -1367,45 +1367,42 @@ bool ScreenViewer::_isScreenPointInsideCurrentImage( qreal x, qreal y )
 
 void ScreenViewer::_loadUI( void )
 {
-	_extra_buttons = g_config.show_extra_buttons;
-	_ui.clean();
+    _extra_buttons = g_config.show_extra_buttons;
+    _ui.clean();
 
-	bool draw_separator = true;
-	#ifdef Q_OS_SYMBIAN
-		draw_separator = false;
-	#endif
+    bool draw_separator = true;
 
     _ui.addAction( TouchUI::TOUCH_ACTION_OPEN, "document-open.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_THUMBS, "folder-photos.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_CONFIG, "settings.svg" );
-	if ( draw_separator ) _ui.addSeparator();
+
+    if ( draw_separator ) _ui.addSeparator();
 
     _ui.addAction( TouchUI::TOUCH_ACTION_GO_FIRST, "go-first.svg" );
     //_ui.addAction( TouchUI::TOUCH_ACTION_GO_PREVIOUS, "go-previous.svg" );
     //_ui.addAction( TouchUI::TOUCH_ACTION_GO_NEXT, "go-next.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_GO_LAST, "go-last.svg" );
-	if ( draw_separator ) _ui.addSeparator();
 
-	#ifndef Q_OS_SYMBIAN
+    if ( draw_separator ) _ui.addSeparator();
+
     //_ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_IN, "zoom-in.svg" );
     //_ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_OUT, "zoom-out.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT, "zoom-fit-best.svg" );
     _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_ORIGINAL, "zoom-original.svg" );
-	if ( g_config.show_extra_buttons )
-	{
+    if ( g_config.show_extra_buttons )
+    {
         _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT_WIDTH, "zoom-fit-width.svg" );
         _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT_HEIGHT, "zoom-fit-height.svg" );
-	}
-	#endif
+    }
 
-	if ( !g_config.multitouch )
-	{
+    if ( !g_config.multitouch )
+    {
         _ui.addAction( TouchUI::TOUCH_ACTION_ROTATE_LEFT, "object-rotate-left.svg" );
         _ui.addAction( TouchUI::TOUCH_ACTION_ROTATE_RIGHT, "object-rotate-right.svg" );
-	}
+    }
 
-	if ( draw_separator ) _ui.addSeparator();
+    if ( draw_separator ) _ui.addSeparator();
     _ui.addAction( TouchUI::TOUCH_ACTION_EXIT, "application-exit.svg" );
 }
 

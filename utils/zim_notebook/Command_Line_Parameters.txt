@@ -17,7 +17,7 @@ get resource files from <dir> instead of the default directory
 enable multitouch support (default on Windows)
 
 **--no-multitouch**
-disable multitouch support (default on Linux and Symbian)
+disable multitouch support (default on Linux)
 
 **--no-transition**
 disable the transition from one image to another

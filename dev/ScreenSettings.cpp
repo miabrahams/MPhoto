@@ -473,13 +473,8 @@ void ScreenSettings::onTimer( void )
 	int delta = 1;
 	double r = (double)height() * g_config.folder_view_scroll_speed;
 	double x = (double)x_int;
-	#ifdef Q_OS_SYMBIAN
-		double r_fixed = r * 0.3;
-		double r_var = r * 0.7;
-	#else
-		double r_fixed = r * 0.05;
-		double r_var = r * 0.95;
-	#endif
+  double r_fixed = r * 0.05;
+  double r_var = r * 0.95;
 	double r_part = 2;
 	if ( x < r_var * r_part )
 	{
@@ -588,16 +583,7 @@ void ScreenSettings::_updateScrollSpeed( int x, int y, bool reset )
 		_scroll_speed = 0.0;
 	} else {
 		double mouse_distance = (double)( y - _last_mouse_y );
-		#ifdef Q_OS_SYMBIAN
-			// Nokia SDK 1.0 uses Qt 4.6
-			QTime t1 = dt.time();
-			QTime t2 = _last_mouse_time.time();
-			double dt1 = ( t1.minute() * 60 + t1.second() ) * 1000 + t1.msec();
-			double dt2 = ( t2.minute() * 60 + t2.second() ) * 1000 + t2.msec();
-			double time_dif = fabs( dt1 - dt2 );
-		#else
-			double time_dif = (double)_last_mouse_time.msecsTo(dt);
-		#endif
+    double time_dif = (double)_last_mouse_time.msecsTo(dt);
 		if ( time_dif > 200.0 ) time_dif = 200.0;
 		if ( time_dif < 1.0 ) time_dif = 1.0;
 		double new_speed = mouse_distance / time_dif;
