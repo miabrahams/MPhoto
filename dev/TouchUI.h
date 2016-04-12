@@ -29,41 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Config.h"
 
-enum TouchUIAction
-{
-	TOUCH_ACTION_NONE,
-	TOUCH_ACTION_EXIT,
-	TOUCH_ACTION_FULLSCREEN,
-	TOUCH_ACTION_CONFIG,
-	TOUCH_ACTION_UP,
-
-	TOUCH_ACTION_ZOOM_IN,
-	TOUCH_ACTION_ZOOM_OUT,
-	TOUCH_ACTION_ZOOM_FIT,
-	TOUCH_ACTION_ZOOM_FIT_WIDTH,
-	TOUCH_ACTION_ZOOM_FIT_HEIGHT,
-	TOUCH_ACTION_ZOOM_ORIGINAL,
-	TOUCH_ACTION_ROTATE_LEFT,
-	TOUCH_ACTION_ROTATE_RIGHT,
-
-	TOUCH_ACTION_GO_FIRST,
-	TOUCH_ACTION_GO_LAST,
-	TOUCH_ACTION_GO_NEXT,
-	TOUCH_ACTION_GO_PREVIOUS,
-	TOUCH_ACTION_OPEN,
-	TOUCH_ACTION_THUMBS,
-
-	TOUCH_ACTION_CONFIRM,
-	TOUCH_ACTION_CANCEL
-};
-
-struct TouchUIItem
-{
-	TouchUIAction action;
-	int x1,y1,x2,y2;
-	QSvgRenderer * image;
-	bool highlighted;
-};
 /**
  * Touch UI layout engine. Allows a ScreenBase to store widgets with locations.
  * Provides a single draw call to place them as requested, and an engine to
@@ -72,9 +37,46 @@ struct TouchUIItem
 
 class TouchUI
 {
+public:
+    enum UIAction
+    {
+        TOUCH_ACTION_NONE,
+        TOUCH_ACTION_EXIT,
+        TOUCH_ACTION_FULLSCREEN,
+        TOUCH_ACTION_CONFIG,
+        TOUCH_ACTION_UP,
+
+        TOUCH_ACTION_ZOOM_IN,
+        TOUCH_ACTION_ZOOM_OUT,
+        TOUCH_ACTION_ZOOM_FIT,
+        TOUCH_ACTION_ZOOM_FIT_WIDTH,
+        TOUCH_ACTION_ZOOM_FIT_HEIGHT,
+        TOUCH_ACTION_ZOOM_ORIGINAL,
+        TOUCH_ACTION_ROTATE_LEFT,
+        TOUCH_ACTION_ROTATE_RIGHT,
+
+        TOUCH_ACTION_GO_FIRST,
+        TOUCH_ACTION_GO_LAST,
+        TOUCH_ACTION_GO_NEXT,
+        TOUCH_ACTION_GO_PREVIOUS,
+        TOUCH_ACTION_OPEN,
+        TOUCH_ACTION_THUMBS,
+
+        TOUCH_ACTION_CONFIRM,
+        TOUCH_ACTION_CANCEL
+    };
+
+    struct UIItem
+    {
+        UIAction action;
+        int x1,y1,x2,y2;
+        QSvgRenderer * image;
+        bool highlighted;
+    };
+
 private:
 
-	QVector<TouchUIItem*> _items;
+    QVector<UIItem*> _items;
 	QPixmap _background;
 	int _width,_height;
 	int _xoffset,_yoffset; // _yoffset is currently not used
@@ -89,9 +91,9 @@ public:
 public:
 
 	void draw( QPainter & painter );
-	TouchUIAction getAction( int x, int y );
+    UIAction getAction( int x, int y );
 	bool highlightItem( int x, int y );
-	void addAction( TouchUIAction a, QString icon_name );
+    void addAction( UIAction a, QString icon_name );
 	void addSeparator( void );
 	void limitScroll( void );
 	void clean( void );

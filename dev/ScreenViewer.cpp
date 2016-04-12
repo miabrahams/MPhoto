@@ -745,7 +745,7 @@ bool ScreenViewer::onTap( int x, int y )
         return true;
 	}
 
-	TouchUIAction action = TOUCH_ACTION_NONE;
+    TouchUI::UIAction action = TouchUI::TOUCH_ACTION_NONE;
 	if ( _show_ui )
 	{
 		action = _ui.getAction(x,y);
@@ -770,7 +770,7 @@ bool ScreenViewer::onTap( int x, int y )
 		return true;
 	}
 
-	if ( action == TOUCH_ACTION_NONE )
+    if ( action == TouchUI::TOUCH_ACTION_NONE )
 	{
 		_show_ui = !_show_ui;
 		_show_ui_by_tap = _show_ui;
@@ -1202,59 +1202,59 @@ double ScreenViewer::_computeFitZoomWithRotation( QImage * img, FitZoomMode zoom
 	return z > 1.0f ? 1.0f : z;
 }
 
-void ScreenViewer::_handleTouchAction( TouchUIAction action )
+void ScreenViewer::_handleTouchAction( TouchUI::UIAction action )
 {
 	switch ( action )
 	{
-		case TOUCH_ACTION_EXIT:
+        case TouchUI::TOUCH_ACTION_EXIT:
 			emit closeOnTouch();
 			break;
-		case TOUCH_ACTION_FULLSCREEN:
+        case TouchUI::TOUCH_ACTION_FULLSCREEN:
 			emit changeFullscreen();
 			break;
-		case TOUCH_ACTION_ZOOM_IN:
+        case TouchUI::TOUCH_ACTION_ZOOM_IN:
 			zoomIn();
 			break;
-		case TOUCH_ACTION_ZOOM_OUT:
+        case TouchUI::TOUCH_ACTION_ZOOM_OUT:
 			zoomOut();
 			break;
-		case TOUCH_ACTION_ZOOM_FIT:
+        case TouchUI::TOUCH_ACTION_ZOOM_FIT:
 			zoomToFit();
 			break;
-		case TOUCH_ACTION_ZOOM_FIT_WIDTH:
+        case TouchUI::TOUCH_ACTION_ZOOM_FIT_WIDTH:
 			zoomToFit(ZOOM_FIT_WIDTH);
 			break;
-		case TOUCH_ACTION_ZOOM_FIT_HEIGHT:
+        case TouchUI::TOUCH_ACTION_ZOOM_FIT_HEIGHT:
 			zoomToFit(ZOOM_FIT_HEIGHT);
 			break;
-		case TOUCH_ACTION_ZOOM_ORIGINAL:
+        case TouchUI::TOUCH_ACTION_ZOOM_ORIGINAL:
 			zoomToOriginalSize();
 			break;
-		case TOUCH_ACTION_ROTATE_LEFT:
+        case TouchUI::TOUCH_ACTION_ROTATE_LEFT:
 			rotateLeft();
 			break;
-		case TOUCH_ACTION_ROTATE_RIGHT:
+        case TouchUI::TOUCH_ACTION_ROTATE_RIGHT:
 			rotateRight();
 			break;
-		case TOUCH_ACTION_GO_FIRST:
+        case TouchUI::TOUCH_ACTION_GO_FIRST:
 			first();
 			break;
-		case TOUCH_ACTION_GO_LAST:
+        case TouchUI::TOUCH_ACTION_GO_LAST:
 			last();
 			break;
-		case TOUCH_ACTION_GO_NEXT:
+        case TouchUI::TOUCH_ACTION_GO_NEXT:
 			forward();
 			break;
-		case TOUCH_ACTION_GO_PREVIOUS:
+        case TouchUI::TOUCH_ACTION_GO_PREVIOUS:
 			back();
 			break;
-		case TOUCH_ACTION_OPEN:
+        case TouchUI::TOUCH_ACTION_OPEN:
 			emit loadFile();
 			break;
-		case TOUCH_ACTION_THUMBS:
+        case TouchUI::TOUCH_ACTION_THUMBS:
 			emit changeViewer();
 			break;
-		case TOUCH_ACTION_CONFIG:
+        case TouchUI::TOUCH_ACTION_CONFIG:
 			emit config();
 			break;
 		default:
@@ -1450,38 +1450,38 @@ void ScreenViewer::_loadUI( void )
 		draw_separator = false;
 	#endif
 
-	_ui.addAction( TOUCH_ACTION_OPEN, "document-open.svg" );
-	_ui.addAction( TOUCH_ACTION_THUMBS, "folder-photos.svg" );
-	_ui.addAction( TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
-	_ui.addAction( TOUCH_ACTION_CONFIG, "settings.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_OPEN, "document-open.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_THUMBS, "folder-photos.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_CONFIG, "settings.svg" );
 	if ( draw_separator ) _ui.addSeparator();
 
-	_ui.addAction( TOUCH_ACTION_GO_FIRST, "go-first.svg" );
-	//_ui.addAction( TOUCH_ACTION_GO_PREVIOUS, "go-previous.svg" );
-	//_ui.addAction( TOUCH_ACTION_GO_NEXT, "go-next.svg" );
-	_ui.addAction( TOUCH_ACTION_GO_LAST, "go-last.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_GO_FIRST, "go-first.svg" );
+    //_ui.addAction( TouchUI::TOUCH_ACTION_GO_PREVIOUS, "go-previous.svg" );
+    //_ui.addAction( TouchUI::TOUCH_ACTION_GO_NEXT, "go-next.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_GO_LAST, "go-last.svg" );
 	if ( draw_separator ) _ui.addSeparator();
 
 	#ifndef Q_OS_SYMBIAN
-	//_ui.addAction( TOUCH_ACTION_ZOOM_IN, "zoom-in.svg" );
-	//_ui.addAction( TOUCH_ACTION_ZOOM_OUT, "zoom-out.svg" );
-	_ui.addAction( TOUCH_ACTION_ZOOM_FIT, "zoom-fit-best.svg" );
-	_ui.addAction( TOUCH_ACTION_ZOOM_ORIGINAL, "zoom-original.svg" );
+    //_ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_IN, "zoom-in.svg" );
+    //_ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_OUT, "zoom-out.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT, "zoom-fit-best.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_ORIGINAL, "zoom-original.svg" );
 	if ( g_config.show_extra_buttons )
 	{
-		_ui.addAction( TOUCH_ACTION_ZOOM_FIT_WIDTH, "zoom-fit-width.svg" );
-		_ui.addAction( TOUCH_ACTION_ZOOM_FIT_HEIGHT, "zoom-fit-height.svg" );
+        _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT_WIDTH, "zoom-fit-width.svg" );
+        _ui.addAction( TouchUI::TOUCH_ACTION_ZOOM_FIT_HEIGHT, "zoom-fit-height.svg" );
 	}
 	#endif
 
 	if ( !g_config.multitouch )
 	{
-		_ui.addAction( TOUCH_ACTION_ROTATE_LEFT, "object-rotate-left.svg" );
-		_ui.addAction( TOUCH_ACTION_ROTATE_RIGHT, "object-rotate-right.svg" );
+        _ui.addAction( TouchUI::TOUCH_ACTION_ROTATE_LEFT, "object-rotate-left.svg" );
+        _ui.addAction( TouchUI::TOUCH_ACTION_ROTATE_RIGHT, "object-rotate-right.svg" );
 	}
 
 	if ( draw_separator ) _ui.addSeparator();
-	_ui.addAction( TOUCH_ACTION_EXIT, "application-exit.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_EXIT, "application-exit.svg" );
 }
 
 void ScreenViewer::_deleteCurrentFile( void )

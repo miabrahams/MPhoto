@@ -38,12 +38,12 @@ ScreenDirectory::ScreenDirectory()
 	_thumbs = NULL;
 	_last_number_of_loaded_images = 0;
 
-	_ui.addAction( TOUCH_ACTION_OPEN, "document-open.svg" );
-	_ui.addAction( TOUCH_ACTION_UP, "up.svg" );
-	_ui.addAction( TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
-	_ui.addAction( TOUCH_ACTION_CONFIG, "settings.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_OPEN, "document-open.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_UP, "up.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_CONFIG, "settings.svg" );
 	_ui.addSeparator();
-	_ui.addAction( TOUCH_ACTION_EXIT, "application-exit.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_EXIT, "application-exit.svg" );
 	
 	_loadIcons();	
 	_load_thread.start();
@@ -871,27 +871,27 @@ void ScreenDirectory::changeIndex(int index)
 * PRIVATE METHODS
 *******************************************************************************/
 
-void ScreenDirectory::_handleTouchAction( TouchUIAction action )
+void ScreenDirectory::_handleTouchAction( TouchUI::UIAction action )
 {
 	switch ( action )
 	{
-		case TOUCH_ACTION_EXIT:
+        case TouchUI::TOUCH_ACTION_EXIT:
 			emit closeOnTouch();
 			break;
-		case TOUCH_ACTION_FULLSCREEN:
+        case TouchUI::TOUCH_ACTION_FULLSCREEN:
 			emit changeFullscreen();
 			break;
-		case TOUCH_ACTION_OPEN:
+        case TouchUI::TOUCH_ACTION_OPEN:
 			emit loadDir();
 			break;
-		case TOUCH_ACTION_THUMBS:
+        case TouchUI::TOUCH_ACTION_THUMBS:
 			_load_thread.clear();
 			emit changeViewer();
 			break;
-		case TOUCH_ACTION_CONFIG:
+        case TouchUI::TOUCH_ACTION_CONFIG:
 			emit config();
 			break;
-		case TOUCH_ACTION_UP:
+        case TouchUI::TOUCH_ACTION_UP:
 			_changeToFolder("..");
 			break;
 		default:

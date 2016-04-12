@@ -49,7 +49,7 @@ void TouchUI::draw( QPainter & painter )
 	// draw icons
 	for ( int i = 0; i < _items.count(); i++ )
 	{
-		TouchUIItem * t = _items[i];
+        UIItem * t = _items[i];
 		int posx = t->x1;
 		int posy = t->y1;
 		if ( posx < 0 ) posx = _screen_width+posx;
@@ -69,13 +69,13 @@ void TouchUI::draw( QPainter & painter )
 	}
 }
 
-TouchUIAction TouchUI::getAction( int x, int y )
+TouchUI::UIAction TouchUI::getAction( int x, int y )
 {
 	x -= _xoffset;
 	y -= _yoffset;
 	for ( int i = 0; i < _items.count(); i++ )
 	{
-		TouchUIItem * t = _items[i];
+        UIItem * t = _items[i];
 		t->highlighted = false;
 		int tx1 = t->x1;
 		int tx2 = t->x2;
@@ -96,7 +96,7 @@ bool TouchUI::highlightItem( int x, int y )
 	y -= _yoffset;
 	for ( int i = 0; i < _items.count(); i++ )
 	{
-		TouchUIItem * t = _items[i];
+        UIItem * t = _items[i];
 		int tx1 = t->x1;
 		int tx2 = t->x2;
 		if ( tx1 < 0 ) { tx1 = _screen_width+tx1; tx2 = _screen_width+tx2; }
@@ -114,14 +114,14 @@ bool TouchUI::highlightItem( int x, int y )
 
 }
 
-void TouchUI::addAction( TouchUIAction a, QString icon_name )
+void TouchUI::addAction( TouchUI::UIAction a, QString icon_name )
 {
 	int spacing = TouchUI::scaleUI(20);
 	int left_space = spacing;
 	if ( _items.count() > 0 )
 		left_space += _items.back()->x2;
 
-	TouchUIItem * ta = new TouchUIItem;
+    TouchUI::UIItem * ta = new TouchUI::UIItem;
 	ta->image = new QSvgRenderer( g_config.install_dir + "/icons/" + icon_name );
 	if ( !ta->image->isValid() )
 	{

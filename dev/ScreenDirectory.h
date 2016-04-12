@@ -98,7 +98,7 @@ public:
 
 private:
 
-	void _handleTouchAction( TouchUIAction action );
+    void _handleTouchAction( TouchUI::UIAction action );
 	void _updateThumbsLocations( void );
 	void _limitScroll( void );
 	void _limitScroll( int & scroll );

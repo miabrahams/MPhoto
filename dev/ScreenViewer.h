@@ -141,7 +141,7 @@ private:
 	void _moveForward( void );
 	void _moveBack( void );
 	void _reloadAll( void );
-	void _handleTouchAction( TouchUIAction action );
+    void _handleTouchAction( TouchUI::UIAction action );
 	void _limitZoom( double & zoom, ImageWithInfo & img );
 	void _limitPan( void );
 	QTransform _getCurrentTransform( void );

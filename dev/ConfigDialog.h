@@ -33,22 +33,24 @@ namespace Ui {
     class ConfigDialog;
 }
 
-struct ComboSlideSpeedValue
-{
-	QString name;
-	int value;
-};
-
-struct UISizeValue
-{
-	QString name;
-	int value;
-};
-
 
 class ConfigDialog : public QDialog
 {
     Q_OBJECT
+public:
+
+    struct ComboSlideSpeedValue
+    {
+        QString name;
+        int value;
+    };
+
+    struct UISizeValue
+    {
+        QString name;
+        int value;
+    };
+
 
 public:
     explicit ConfigDialog(QWidget *parent = 0);

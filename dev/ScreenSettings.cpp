@@ -35,10 +35,10 @@ ScreenSettings::ScreenSettings()
 
 	_resetUserActionsParameters();
 
-	_ui.addAction( TOUCH_ACTION_CONFIRM, "confirm.svg" );
-	_ui.addAction( TOUCH_ACTION_CANCEL, "cancel.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_CONFIRM, "confirm.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_CANCEL, "cancel.svg" );
 	_ui.addSeparator();
-	_ui.addAction( TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
+    _ui.addAction( TouchUI::TOUCH_ACTION_FULLSCREEN, "view-fullscreen.svg" );
 	if ( g_config.background_color.value() < 128 )
 	{
 		_check.load( g_config.install_dir + "/icons/check.svg" );
@@ -524,21 +524,21 @@ void ScreenSettings::onSettingsChanged( void )
 * PRIVATE METHODS
 *******************************************************************************/
 
-void ScreenSettings::_handleTouchAction( TouchUIAction action )
+void ScreenSettings::_handleTouchAction( TouchUI::UIAction action )
 {
 	switch ( action )
 	{
-        case TOUCH_ACTION_EXIT:
+        case TouchUI::TOUCH_ACTION_EXIT:
             emit closeOnTouch();
             break;
-		case TOUCH_ACTION_CONFIRM:
+        case TouchUI::TOUCH_ACTION_CONFIRM:
 			_applySettings();
 			emit changeViewer();
 			break;
-		case TOUCH_ACTION_CANCEL:
+        case TouchUI::TOUCH_ACTION_CANCEL:
 			emit changeViewer();
 			break;
-		case TOUCH_ACTION_FULLSCREEN:
+        case TouchUI::TOUCH_ACTION_FULLSCREEN:
 			emit changeFullscreen();
 			break;
 		default:
