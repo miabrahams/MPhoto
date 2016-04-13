@@ -532,18 +532,17 @@ void ScreenViewer::onTouchEvent(QTouchEvent *touchEvent)
 
     if ( touchEvent->type() == QEvent::TouchBegin && touchPoints.count() == 1 )
     {
+        // Start a new touch stroke
         const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
         int x = (int)touchPoint0.pos().x();
         int y = (int)touchPoint0.pos().y();
         if ( m_action.startTouchAction(x,y) )
-            _resetTouchParams();
+            commitTouchParams();
     }
 
     if ( m_action.isTouchAction() ) // Don't interrupt mouse actions with touch
     {
-        if ( touchPoints.count() == 1
-             && !_two_fingers
-             && !_changing )
+        if ( touchPoints.count() == 1 && !_two_fingers && !_changing )
         {
             const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
             onPan( touchPoint0, touchEvent->type() == QEvent::TouchEnd );
@@ -563,8 +562,7 @@ void ScreenViewer::onTouchEvent(QTouchEvent *touchEvent)
 
         if ( touchEvent->type() == QEvent::TouchEnd )
         {
-            if ( !_allow_drag && !_two_fingers
-                 && touchPoints.count() >= 1 )
+            if ( !_allow_drag && !_two_fingers && touchPoints.count() >= 1 )
             {
                 const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
                 int x = (int)touchPoint0.pos().x();
@@ -644,16 +642,15 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
             emit startTimer();
         }
     }
-
 }
 
 void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouchEvent::TouchPoint tp1 )
 {
-    // when starting, verify that the two fingers are inside the image
+    // when starting, verify that at least one finger is inside the image
     if ( !_two_fingers_valid_operation )
     {
         if ( _isScreenPointInsideCurrentImage( tp0.startPos().x(), tp0.startPos().y() )
-             && _isScreenPointInsideCurrentImage( tp1.startPos().x(), tp1.startPos().y() ) )
+             || _isScreenPointInsideCurrentImage( tp1.startPos().x(), tp1.startPos().y() ) )
         {
             _two_fingers_valid_operation = true;
         } else {
@@ -1268,7 +1265,7 @@ void ScreenViewer::_resetUserActionsParameters( void )
     m_action.endTouchAction();
 }
 
-void ScreenViewer::_resetTouchParams( void )
+void ScreenViewer::commitTouchParams( void )
 {
     _initial_posx = _current.posx;
     _initial_posy = _current.posy + _drag_offset_y;

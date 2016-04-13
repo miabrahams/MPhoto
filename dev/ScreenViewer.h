@@ -132,7 +132,7 @@ signals:
 private:
 
     void _resetUserActionsParameters( void );
-    void _resetTouchParams( void ); // Commit current drag/rotate state
+    void commitTouchParams( void ); // Commit current drag/rotate state
     void loadImage( int index, ImageWithInfo &i );
     void resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
     void resetFitZoomWithRotation( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
