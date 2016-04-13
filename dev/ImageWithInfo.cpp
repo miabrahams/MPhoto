@@ -65,15 +65,15 @@ double ImageWithInfo::computeFitZoomWithRotation( QSize screenSize, FitZoomMode 
     double z = 1.0;
     switch ( zoom_mode )
     {
-        case ZOOM_FIT_WIDTH:
-            z = xz;
-            break;
-        case ZOOM_FIT_HEIGHT:
-            z = yz;
-            break;
-        default:
-            z = ( xz < yz ? xz : yz );
-            break;
+    case ZOOM_FIT_WIDTH:
+        z = xz;
+        break;
+    case ZOOM_FIT_HEIGHT:
+        z = yz;
+        break;
+    default:
+        z = ( xz < yz ? xz : yz );
+        break;
     }
     return z > 1.0f ? 1.0f : z;
 }
@@ -86,15 +86,15 @@ double ImageWithInfo::computeFitZoom( QSize screenSize, FitZoomMode zoom_mode )
     double z = 1.0;
     switch ( zoom_mode )
     {
-        case ZOOM_FIT_WIDTH:
-            z = xz;
-            break;
-        case ZOOM_FIT_HEIGHT:
-            z = yz;
-            break;
-        default:
-            z = ( xz < yz ? xz : yz );
-            break;
+    case ZOOM_FIT_WIDTH:
+        z = xz;
+        break;
+    case ZOOM_FIT_HEIGHT:
+        z = yz;
+        break;
+    default:
+        z = ( xz < yz ? xz : yz );
+        break;
     }
     return z > 1.0f ? 1.0f : z;
 }

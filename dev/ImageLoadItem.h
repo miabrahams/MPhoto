@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 struct ImageLoadItem
 {
-	QString name;
+    QString name;
     QImage ** destination = nullptr;
     int w = 0;
     int h = 0;

@@ -33,54 +33,54 @@ class ImageArea;
 
 class MainWindow : public QMainWindow
 {
-Q_OBJECT
+    Q_OBJECT
 
 private:
 
-	ImageArea * _image_area;
-	bool _maximized;
+    ImageArea * _image_area;
+    bool _maximized;
 
-	QMenu * _file_menu;
-	QMenu * _options_menu;
-	QMenu * _help_menu;
+    QMenu * _file_menu;
+    QMenu * _options_menu;
+    QMenu * _help_menu;
 
-	QAction * _open_act;
-	QAction * _fullscreen_act;
-	QAction * _show_name_act;
-	QAction * _config_act;
-	QAction * _exit_act;
-	QAction * _about_act;
+    QAction * _open_act;
+    QAction * _fullscreen_act;
+    QAction * _show_name_act;
+    QAction * _config_act;
+    QAction * _exit_act;
+    QAction * _about_act;
 
-	QCursor _cursor;
+    QCursor _cursor;
 
 public:
 
-	MainWindow( QString startfile, bool fullscreen );
+    MainWindow( QString startfile, bool fullscreen );
 
 protected:
 
-	void closeEvent( QCloseEvent * event );
-	void keyPressEvent( QKeyEvent * event );
-	void wheelEvent( QWheelEvent * event );
+    void closeEvent( QCloseEvent * event );
+    void keyPressEvent( QKeyEvent * event );
+    void wheelEvent( QWheelEvent * event );
 
 private slots:
 
-	void open();
-	void openDir();
-	void about();
-	void changeFullscreen();
-	void showOrHideName();
+    void open();
+    void openDir();
+    void about();
+    void changeFullscreen();
+    void showOrHideName();
     void config(); // Show popup config dialog from menu
-	void hideCursor();
-	void showCursor();
-	void loadDroppedFile( QString name );
+    void hideCursor();
+    void showCursor();
+    void loadDroppedFile( QString name );
 
 private:
 
-	void _createActions();
-	void _createMenus();
-	void _loadFiles( QString name );
-	void _loadFiles( QString dir, QString current_file );
+    void _createActions();
+    void _createMenus();
+    void _loadFiles( QString name );
+    void _loadFiles( QString dir, QString current_file );
 };
 
 #endif
