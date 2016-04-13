@@ -620,8 +620,8 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
 
     if ( _allow_drag )
     {
-        _drag_offset = _initial_drag_offset + dx;
-        _drag_offset_y = _initial_drag_offset_y + dy;
+        _drag_offset = _committed_drag_offset + dx;
+        _drag_offset_y = _committed_drag_offset_y + dy;
         // qDebug() << "Pan" << QTime::currentTime();
         update();
         if ( end )
@@ -661,15 +661,15 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouc
     QLineF startPos(tp1.startPos(), tp0.startPos());
 
     // compute zoom
-    double new_zoom = _initial_zoom * currentPos.length() / startPos.length();
+    double new_zoom = _committed_zoom * currentPos.length() / startPos.length();
     _limitZoom(new_zoom, _current);
 
     // compute rotation
     qreal new_rotation;
     if (g_config.allow_rotation) {
-        new_rotation = _initial_rotation + currentPos.angle() - startPos.angle();
+        new_rotation = _committed_rotation + currentPos.angle() - startPos.angle();
     } else {
-        new_rotation = _initial_rotation;
+        new_rotation = _committed_rotation;
     }
 
     // window size need in the formula
@@ -677,7 +677,7 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouc
     qreal sh = (qreal)height();
 
     // compute translation
-    double rot_a = - _initial_rotation * M_PI / 180.0;
+    double rot_a = - _committed_rotation * M_PI / 180.0;
     double rot_b = - new_rotation * M_PI / 180.0;
     qreal cosa = (qreal)cos( rot_a );
     qreal sina = (qreal)sin( rot_a );
@@ -687,8 +687,8 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouc
     qreal yt1 = tp0.startPos().y();
     qreal xt1p = tp0.pos().x();
     qreal yt1p = tp0.pos().y();
-    qreal x1 = (  (xt1-_initial_posx-sw/2)*cosa + (yt1-_initial_posy-sh/2)*sina ) / _initial_zoom;
-    qreal y1 = ( -(xt1-_initial_posx-sw/2)*sina + (yt1-_initial_posy-sh/2)*cosa ) / _initial_zoom;
+    qreal x1 = (  (xt1-_committed_posx-sw/2)*cosa + (yt1-_committed_posy-sh/2)*sina ) / _committed_zoom;
+    qreal y1 = ( -(xt1-_committed_posx-sw/2)*sina + (yt1-_committed_posy-sh/2)*cosa ) / _committed_zoom;
     qreal px = xt1p - sw/2 - (x1*cosb - y1*sinb) * new_zoom;
     qreal py = yt1p - sh/2 - (x1*sinb + y1*cosb) * new_zoom;
 
@@ -759,10 +759,10 @@ void ScreenViewer::onMousePressed( QEvent * event )
     if ( !m_action.startMouseAction(mouseEvent->x(), mouseEvent->y(), mouseEvent->button()) )
         return;
 
-    _initial_posx = _current.posx;
-    _initial_posy = _current.posy;
-    _initial_drag_offset = _drag_offset;
-    _initial_drag_offset_y = _drag_offset_y;
+    _committed_posx = _current.posx;
+    _committed_posy = _current.posy;
+    _committed_drag_offset = _drag_offset;
+    _committed_drag_offset_y = _drag_offset_y;
     _allow_drag = false;
     _allow_zoom = false;
     _allow_pan = false;
@@ -890,8 +890,8 @@ void ScreenViewer::onMouseMove( QEvent * event )
                 _allow_pan = true;
             if ( _allow_pan )
             {
-                _current.posx = _initial_posx + dx0;
-                _current.posy = _initial_posy + dy0;
+                _current.posx = _committed_posx + dx0;
+                _current.posy = _committed_posy + dy0;
                 _limitPan();
                 update();
             }
@@ -919,7 +919,7 @@ void ScreenViewer::onMouseMove( QEvent * event )
             }
             if ( _allow_drag )
             {
-                _drag_offset = _initial_drag_offset + dx;
+                _drag_offset = _committed_drag_offset + dx;
                 update();
             }
         }
@@ -1250,13 +1250,13 @@ void ScreenViewer::_limitPan( void )
 void ScreenViewer::_resetUserActionsParameters( void )
 {
     _drag_offset = 0;
-    _initial_rotation = 0.0;
-    _initial_zoom = 0.0;
+    _committed_rotation = 0.0;
+    _committed_zoom = 0.0;
 
     _mouse_start_x = _mouse_start_y = 0;
     _mouse_drag = false;
 
-    _initial_posx = _initial_posy = _initial_drag_offset = _initial_drag_offset_y = 0;
+    _committed_posx = _committed_posy = _committed_drag_offset = _committed_drag_offset_y = 0;
     _allow_zoom = _allow_pan = _allow_drag = false;
     _changing = false;
     _two_fingers = _two_fingers_valid_operation = false;
@@ -1267,13 +1267,12 @@ void ScreenViewer::_resetUserActionsParameters( void )
 
 void ScreenViewer::commitTouchParams( void )
 {
-    _initial_posx = _current.posx;
-    _initial_posy = _current.posy + _drag_offset_y;
-    _initial_drag_offset = _drag_offset;
-    // _initial_drag_offset_y = _drag_offset_y;
-    _initial_drag_offset_y = 0;
-    _initial_zoom = _current.zoom;
-    _initial_rotation = _current.rotation;
+    _committed_posx = _current.posx;
+    _committed_posy = _current.posy + _drag_offset_y;
+    _committed_drag_offset = _drag_offset;
+    _committed_drag_offset_y = 0;
+    _committed_zoom = _current.zoom;
+    _committed_rotation = _current.rotation;
     _allow_zoom = false;
     _allow_pan = false;
     _allow_drag = false;

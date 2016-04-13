@@ -45,9 +45,9 @@ private:
     bool _show_ui;
     bool _show_ui_by_tap;
 
-    int _initial_posx,_initial_posy = 0;
-    int _initial_drag_offset = 0, _initial_drag_offset_y = 0;
-    double _initial_rotation,_initial_zoom;
+    int _committed_posx,_committed_posy = 0;
+    int _committed_drag_offset = 0, _committed_drag_offset_y = 0;
+    double _committed_rotation,_committed_zoom;
     bool _allow_drag; // when changing from one picture to another
     bool _allow_zoom,_allow_pan; // only in single touch (or mouse) mode
     bool _two_fingers; // only on multitouch mode when a two finger operation starts
