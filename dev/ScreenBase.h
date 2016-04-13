@@ -32,103 +32,101 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class ScreenBase : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 private:
 
-	int _sb_width;
-	int _sb_height;
+    QSize m_size;
 
 protected:
 
-	QString m_dir_name;
-	QStringList m_files;
-	int m_current_index;
-	TouchMouseControl m_action;
+    QString m_dir_name;
+    QStringList m_files;
+    int m_current_index;
+    TouchMouseControl m_action;
 
 public:
 
-	ScreenBase( void );
-	~ScreenBase( void );
+    ScreenBase( void );
+    ~ScreenBase( void );
 
 public:
 
-	// non-virtual public methods
-	void loadFiles( QString dir, QString current_file );
-	void reloadFiles( void );
-	void changeFromOtherViewer( ScreenBase * other );
-
-public:
-	
-	// pure virtual methods
-	virtual void onSetFiles( QString dir_name, QStringList files, QString current ) = 0;
-	virtual void onPaint( QPainter & painter ) = 0;
-	virtual void onResize( void ) = 0;
-	virtual void onKeyPress( QKeyEvent * event ) = 0;
-	virtual void onWheel( QWheelEvent * event ) = 0;
-	virtual void onTimer( void ) = 0;
-	virtual bool onEvent(QEvent *event) = 0;
-	virtual void onSettingsChanged( void ) = 0;
+    // non-virtual public methods
+    void loadFiles( QString dir, QString current_file );
+    void reloadFiles( void );
+    void changeFromOtherViewer( ScreenBase * other );
 
 public:
 
-	// public virtual methods
-	virtual QString getCurrentFile( void );
+    // pure virtual methods
+    virtual void onSetFiles( QString dir_name, QStringList files, QString current ) = 0;
+    virtual void onPaint( QPainter & painter ) = 0;
+    virtual void onResize( void ) = 0;
+    virtual void onKeyPress( QKeyEvent * event ) = 0;
+    virtual void onWheel( QWheelEvent * event ) = 0;
+    virtual void onTimer( void ) = 0;
+    virtual bool onEvent(QEvent *event) = 0;
+    virtual void onSettingsChanged( void ) = 0;
+
+public:
+
+    // public virtual methods
+    virtual QString getCurrentFile( void );
 
 signals:
 
-	void updateSignal( void );
-	void closeOnTouch( void );
-	void changeFullscreen( void );
-	void loadFile( void );
-	void loadDir( void );
-	void startTimer( void );
-	void changeViewer( void );
-	void config( void );
-	void indexChanged( int );
-	
+    void updateSignal( void );
+    void closeOnTouch( void );
+    void changeFullscreen( void );
+    void loadFile( void );
+    void loadDir( void );
+    void startTimer( void );
+    void changeViewer( void );
+    void config( void );
+    void indexChanged( int );
+
 public:
 
-	inline void update( void )
-	{
-		emit updateSignal();
-	}
-	
-	inline int width( void )
-	{
-		return _sb_width;
-	}
-	
-	inline int height( void )
-	{
-		return _sb_height;
-	}
-	
-	inline void setSize( int w, int h )
-	{
-		_sb_width = w;
-		_sb_height = h;
-	}
+    inline void update( void )
+    {
+        emit updateSignal();
+    }
+
+    inline int width( void )
+    {
+        return m_size.width();
+    }
+
+    inline int height( void )
+    {
+        return m_size.height();
+    }
+
+    inline void setSize( int w, int h )
+    {
+        m_size = QSize(w,h);
+    }
 
     inline QSize size()
     {
-        return QSize(_sb_width, _sb_height);
+        return m_size;
     }
-	
-	inline QStringList & getFiles( void )
-	{
-		return m_files;
-	}
 
-	inline QString getDirName( void )
-	{
-		return m_dir_name;
-	}
-	
-	inline int getCurrentFileIndex( void )
-	{
-		return m_current_index;
-	}
+    inline QStringList & getFiles( void )
+    {
+        return m_files;
+    }
+
+    inline QString getDirName( void )
+    {
+        return m_dir_name;
+    }
+
+    inline int getCurrentFileIndex( void )
+    {
+        return m_current_index;
+    }
 };
 
 #endif // SCREENBASE_H

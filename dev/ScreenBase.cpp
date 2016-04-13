@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ScreenBase::ScreenBase( void ) : QObject()
 {
-	_sb_width = _sb_height = 0;
+    m_size = QSize(0,0);
 	m_current_index = 0;
 }
 
