@@ -37,8 +37,8 @@ struct Config
 	QColor background_color;
 	QColor text_color;
 	bool multitouch;
-	int drag_sensitivity;
-	int flip_distance;
+    int drag_sensitivity; // Distance until we start showing other pics when panning
+    int flip_distance; // Distance until we move to the next pic when panning
 	double min_zoom;
 	double max_zoom;
 	bool show_file_name;

@@ -22,58 +22,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __TOUCHMOUSECONTROL_H__
 
 #include <Qt>
-#include <QDateTime>
+#include <QTime>
+
+/**
+ * @brief Manages input strokes from the UI.
+ */
 
 class TouchMouseControl
 {
 private:
-	int _x,_y;
-	bool _touch_started;
-	Qt::MouseButton _mouse_started;
-	QDateTime _last_touch_time;
-
-public:
-	inline TouchMouseControl( void )
-	{
-		_x = _y = -1;
-		_touch_started = false;
-		_mouse_started = Qt::NoButton;
-		_last_touch_time.setTime_t(0);
-	}
+    int m_x = -1;
+    int m_y = -1;
+    bool m_touch_started = false;
+    Qt::MouseButton m_mouse_started = Qt::NoButton;
+    QTime m_last_touch_start_time;
+    QTime m_last_touch_release_time;
 
 public:
 
-	bool startTouchAction( int x, int y );
-	bool startMouseAction( int x, int y, Qt::MouseButton button );
+    bool startTouchAction( int x, int y );
+    bool startMouseAction( int x, int y, Qt::MouseButton button );
+    void endTouchAction( void );
+    void endMouseAction( void );
 
 public:
 
-	inline void endTouchAction( void )
-	{
-		_touch_started = false;
-		_last_touch_time = QDateTime::currentDateTime();
-	}
 
-	inline bool isTouchAction( void )
-	{
-		return _touch_started;
-	}
+    inline bool isTouchAction( void )
+    {
+        return m_touch_started;
+    }
 
-	inline void endMouseAction( void )
-	{
-		_mouse_started = Qt::NoButton;
-	}
+    inline bool isMouseAction( void )
+    {
+        return m_mouse_started != Qt::NoButton;
+    }
 
-	inline bool isMouseAction( void )
-	{
-		return _mouse_started != Qt::NoButton;
-	}
+    inline void copyParameters( TouchMouseControl & other )
+    {
+        m_x = other.m_x;
+        m_y = other.m_y;
+    }
 
-	inline void copyParameters( TouchMouseControl & other )
-	{
-		_x = other._x;
-		_y = other._y;
-	}
+    inline int touchElapsedTime()
+    {
+        if (m_touch_started)
+        {
+            return m_last_touch_start_time.elapsed();
+        }
+        else
+        {
+            return -1;
+        }
+    }
 };
 
 #endif // TOUCHMOUSECONTROL_H

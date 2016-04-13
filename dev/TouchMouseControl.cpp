@@ -29,32 +29,47 @@ static inline int abs_i( int x )
 
 bool TouchMouseControl::startTouchAction( int x, int y )
 {
-	if ( _mouse_started == Qt::NoButton )
+    if ( m_mouse_started == Qt::NoButton )
 	{
-		_x = x;
-		_y = y;
-		_touch_started = true;
+        m_x = x;
+        m_y = y;
+        m_touch_started = true;
+        m_last_touch_start_time.start();
 	} else {
-		_touch_started = false;
+        m_touch_started = false;
 	}
-	return _touch_started;
+    return m_touch_started;
+}
+
+
+void TouchMouseControl::endTouchAction()
+{
+    m_touch_started = false;
+    m_last_touch_release_time.start();
 }
 
 bool TouchMouseControl::startMouseAction( int x, int y, Qt::MouseButton button )
 {
 	// don't start mouse action if touch action is active
-	if ( !_touch_started
-		&& (!g_config.multitouch || abs_i(x-_x) > 1 || abs_i(y-_y) > 1 ) )
+    if ( !m_touch_started
+        && (!g_config.multitouch || abs_i(x-m_x) > 1 || abs_i(y-m_y) > 1 ) )
 	{
-		_mouse_started = button;
+        m_mouse_started = button;
 	} else {
-		_mouse_started = Qt::NoButton;
+        m_mouse_started = Qt::NoButton;
 	}
 
-	// don't start mouse action one second after the last touch action has finished
-	qint64 time_diff = _last_touch_time.msecsTo( QDateTime::currentDateTime() );
+    // Block mouse events for a bit after touch action has started.
+    qint64 time_diff = m_last_touch_release_time.elapsed();
 	if ( time_diff < 40 )
-		_mouse_started = Qt::NoButton;
+        m_mouse_started = Qt::NoButton;
 
-	return _mouse_started != Qt::NoButton;
+    return m_mouse_started != Qt::NoButton;
+}
+
+
+
+void TouchMouseControl::endMouseAction( void )
+{
+    m_mouse_started = Qt::NoButton;
 }

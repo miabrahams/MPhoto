@@ -495,68 +495,8 @@ bool ScreenViewer::onEvent( QEvent * event )
     case QEvent::TouchBegin:
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
-    {
-        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
-        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
-
-        if ( event->type() == QEvent::TouchBegin && touchPoints.count() == 1 )
-        {
-            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
-            int x = (int)touchPoint0.pos().x();
-            int y = (int)touchPoint0.pos().y();
-            if ( m_action.startTouchAction(x,y) )
-                _resetTouchParams();
-        }
-
-        if ( m_action.isTouchAction() )
-        {
-            if ( touchPoints.count() == 1
-                 && !_two_fingers
-                 && !_changing )
-            {
-                const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
-                onPan( touchPoint0, event->type() == QEvent::TouchEnd );
-            }
-
-            if ( touchPoints.count() >= 2 && !_allow_drag && !_changing)
-            {
-                _two_fingers = true;
-
-                const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
-                const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
-                onTwoFingers( touchPoint0, touchPoint1 );
-
-                //_limitPan();
-                update();
-            }
-
-            if ( event->type() == QEvent::TouchEnd )
-            {
-                if ( !_allow_drag && !_two_fingers
-                     && touchPoints.count() >= 1 )
-                {
-                    const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
-                    int x = (int)touchPoint0.pos().x();
-                    int y = (int)touchPoint0.pos().y();
-                    onTap(x,y);
-                    update();
-                }
-                if ( touchPoints.count() == 1 )
-                {
-                    _allow_drag = false;
-                    m_action.endTouchAction();
-                }
-                double zoomRatio = (getZoom()/computeCurrentFitZoom());
-                if( zoomRatio < 0.70 )
-                {
-                    emit changeViewer();
-                } else if( zoomRatio < 1.00 ) {
-                    emit fitImage();
-                }
-            }
-        }
-    }
-    break;
+        onTouchEvent(static_cast<QTouchEvent *>(event));
+        break;
 
     case QEvent::MouseButtonPress:
         onMousePressed( event );
@@ -585,9 +525,73 @@ void ScreenViewer::onSettingsChanged( void )
     // currently nothing to do
 }
 
+
+void ScreenViewer::onTouchEvent(QTouchEvent *touchEvent)
+{
+    auto touchPoints = touchEvent->touchPoints();
+
+    if ( touchEvent->type() == QEvent::TouchBegin && touchPoints.count() == 1 )
+    {
+        const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+        int x = (int)touchPoint0.pos().x();
+        int y = (int)touchPoint0.pos().y();
+        if ( m_action.startTouchAction(x,y) )
+            _resetTouchParams();
+    }
+
+    if ( m_action.isTouchAction() ) // Don't interrupt mouse actions with touch
+    {
+        if ( touchPoints.count() == 1
+             && !_two_fingers
+             && !_changing )
+        {
+            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+            onPan( touchPoint0, touchEvent->type() == QEvent::TouchEnd );
+        }
+
+        if ( touchPoints.count() >= 2 && !_allow_drag && !_changing)
+        {
+            _two_fingers = true;
+
+            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+            const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
+            onTwoFingers( touchPoint0, touchPoint1 );
+
+            //_limitPan();
+            update();
+        }
+
+        if ( touchEvent->type() == QEvent::TouchEnd )
+        {
+            if ( !_allow_drag && !_two_fingers
+                 && touchPoints.count() >= 1 )
+            {
+                const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+                int x = (int)touchPoint0.pos().x();
+                int y = (int)touchPoint0.pos().y();
+                onTap(x,y);
+                update();
+            }
+            if ( touchPoints.count() == 1 )
+            {
+                _allow_drag = false;
+                m_action.endTouchAction();
+            }
+            double zoomRatio = (getZoom()/computeCurrentFitZoom());
+            if( zoomRatio < 0.70 )
+            {
+                emit changeViewer();
+            } else if( zoomRatio < 1.00 ) {
+                emit fitImage();
+            }
+        }
+    }
+}
+
 void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
 {
     int dx = point.pos().x() - point.startPos().x();
+    int dy = point.pos().y() - point.startPos().y();
 
     // Strange, not sure when this happens
     if ( point.startPos().y() < _ui.height()
@@ -604,7 +608,7 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
         return;
     }
 
-    // We get this if
+    // We get this once we go too far
     if ( !_two_fingers && abs(dx) > g_config.drag_sensitivity )
     {
         _allow_drag = true;
@@ -616,10 +620,10 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
         emit startTimer();
     }
 
-    // We get this if the pan is centered, there are no other images showing.
     if ( _allow_drag )
     {
         _drag_offset = _initial_drag_offset + dx;
+        _drag_offset_y = _initial_drag_offset_y + dy;
         // qDebug() << "Pan" << QTime::currentTime();
         update();
         if ( end )
@@ -761,6 +765,7 @@ void ScreenViewer::onMousePressed( QEvent * event )
     _initial_posx = _current.posx;
     _initial_posy = _current.posy;
     _initial_drag_offset = _drag_offset;
+    _initial_drag_offset_y = _drag_offset_y;
     _allow_drag = false;
     _allow_zoom = false;
     _allow_pan = false;
@@ -1254,7 +1259,7 @@ void ScreenViewer::_resetUserActionsParameters( void )
     _mouse_start_x = _mouse_start_y = 0;
     _mouse_drag = false;
 
-    _initial_posx = _initial_posy = _initial_drag_offset = 0;
+    _initial_posx = _initial_posy = _initial_drag_offset = _initial_drag_offset_y = 0;
     _allow_zoom = _allow_pan = _allow_drag = false;
     _changing = false;
     _two_fingers = _two_fingers_valid_operation = false;
@@ -1266,8 +1271,10 @@ void ScreenViewer::_resetUserActionsParameters( void )
 void ScreenViewer::_resetTouchParams( void )
 {
     _initial_posx = _current.posx;
-    _initial_posy = _current.posy;
+    _initial_posy = _current.posy + _drag_offset_y;
     _initial_drag_offset = _drag_offset;
+    // _initial_drag_offset_y = _drag_offset_y;
+    _initial_drag_offset_y = 0;
     _initial_zoom = _current.zoom;
     _initial_rotation = _current.rotation;
     _allow_zoom = false;
@@ -1322,7 +1329,7 @@ QTransform ScreenViewer::_getCurrentTransform( void )
     qreal dy = (qreal)_current.height();
 
     tr.translate( (qreal)width() / 2, (qreal)height() / 2 );
-    tr.translate( (qreal)(_current.posx + _drag_offset), (qreal)(_current.posy) );
+    tr.translate( (qreal)(_current.posx + _drag_offset), (qreal)(_current.posy + _drag_offset_y) );
     tr.rotate(-_current.rotation);
     tr.scale( _current.zoom, _current.zoom );
     tr.translate( -dx/2,-dy/2);

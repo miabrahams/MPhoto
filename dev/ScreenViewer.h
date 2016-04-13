@@ -38,13 +38,15 @@ class ScreenViewer : public ScreenBase
 private:
 
     int _drag_offset; // Distance panned to the left or right
+    int _drag_offset_y; // Distance panned up or down
 
     ImageWithInfo _previous, _current, _next;
 
     bool _show_ui;
     bool _show_ui_by_tap;
 
-    int _initial_posx,_initial_posy,_initial_drag_offset;
+    int _initial_posx,_initial_posy = 0;
+    int _initial_drag_offset = 0, _initial_drag_offset_y = 0;
     double _initial_rotation,_initial_zoom;
     bool _allow_drag; // when changing from one picture to another
     bool _allow_zoom,_allow_pan; // only in single touch (or mouse) mode
@@ -100,6 +102,7 @@ public:
     bool onEvent(QEvent *event);
     void onSettingsChanged( void );
 
+    void onTouchEvent(QTouchEvent *touchEvent);
     void onPan( const QTouchEvent::TouchPoint & point, bool end );
     void onTwoFingers( const QTouchEvent::TouchPoint tp0,
                        const QTouchEvent::TouchPoint tp1 );
@@ -129,7 +132,7 @@ signals:
 private:
 
     void _resetUserActionsParameters( void );
-    void _resetTouchParams( void );
+    void _resetTouchParams( void ); // Commit current drag/rotate state
     void loadImage( int index, ImageWithInfo &i );
     void resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
     void resetFitZoomWithRotation( ImageWithInfo &i, FitZoomMode zoom_mode = ZOOM_FIT );
