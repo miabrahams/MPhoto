@@ -121,7 +121,7 @@ void ScreenViewer::changeUI( void )
 
 void ScreenViewer::zoomIn( double speed )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
 	speed = ( speed > 0.0 ? speed : g_config.zoom_speed );
@@ -135,7 +135,7 @@ void ScreenViewer::zoomIn( double speed )
 
 void ScreenViewer::zoomOut( double speed )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
 	speed = ( speed > 0.0 ? speed : g_config.zoom_speed );
@@ -149,7 +149,7 @@ void ScreenViewer::zoomOut( double speed )
 
 void ScreenViewer::zoomToFit( FitZoomMode zoom_mode )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
     _current.recenter();
@@ -159,7 +159,7 @@ void ScreenViewer::zoomToFit( FitZoomMode zoom_mode )
 
 void ScreenViewer::zoomToOriginalSize( void )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
     _current.zoom = 1.0;
@@ -169,7 +169,7 @@ void ScreenViewer::zoomToOriginalSize( void )
 
 void ScreenViewer::zoomToOriginalSize( int x, int y )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
 	double old_zoom = _current.zoom;
@@ -185,7 +185,7 @@ void ScreenViewer::zoomToOriginalSize( int x, int y )
 
 void ScreenViewer::rotateLeft( void )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
     _current.rotateLeft(size());
@@ -194,7 +194,7 @@ void ScreenViewer::rotateLeft( void )
 
 void ScreenViewer::rotateRight( void )
 {
-    if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
     _current.rotateRight(size());
@@ -203,7 +203,7 @@ void ScreenViewer::rotateRight( void )
 
 void ScreenViewer::moveView( int deltax, int deltay )
 {
-	if ( _current.image == NULL || _changing )
+    if ( _current.isNull() || _changing )
 		return;
 
 	_current.posx -= deltax;
@@ -308,7 +308,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 		painter.drawImage( r, *_current );
 	}*/
 
-	if ( _current.image )
+    if ( !(_current.isNull()) )
         {
 		if ( _current.zoom == 0.0 )
             resetFitZoom( _current );
@@ -367,7 +367,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 
 	}
 
-	if ( _next.image && _drag_offset < 0 )
+    if ( !(_next.isNull()) && _drag_offset < 0 )
 	{
 		if ( _next.zoom == 0.0 )
             resetFitZoom( _next );
@@ -379,7 +379,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 		painter.drawImage( r, *_next.image );
 	}
 
-	if ( _previous.image && _drag_offset > 0 )
+    if ( !(_previous.isNull()) && _drag_offset > 0 )
 	{
 		if ( _previous.zoom == 0.0 )
             resetFitZoom( _previous );
@@ -459,7 +459,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 		_zoom_in_icon.render( &painter, r2 );
 
 
-		if ( _current.image != NULL )
+        if ( !(_current.isNull()) )
 		{
             double fit_zoom = _current.computeFitZoomWithRotation(size());
 			double min_zoom = ( fit_zoom < 1.0 ? fit_zoom : 1.0 );
@@ -480,7 +480,7 @@ void ScreenViewer::onPaint( QPainter & painter )
 
 void ScreenViewer::onResize( void )
 {
-	if ( _current.image != NULL && _current.posx == 0 && _current.posy == 0 )
+    if ( !(_current.isNull()) && _current.posx == 0 && _current.posy == 0 )
 	{
         resetFitZoom( _previous );
         resetFitZoomWithRotation(_current);
@@ -1065,7 +1065,7 @@ bool ScreenViewer::isIdle()
 
 bool ScreenViewer::isReady()
 {
-	if(_current.image) return true;
+    if(!(_current.isNull())) return true;
 	return false;
 }
 
@@ -1217,7 +1217,7 @@ void ScreenViewer::_limitZoom( double & zoom, ImageWithInfo & img )
 
 void ScreenViewer::_limitPan( void )
 {
-	if ( _current.image == NULL ) return;
+    if ( _current.isNull() ) return;
 	//int sw = (int)( (double)_current.width() * _current.zoom );
 	//int sh = (int)( (double)_current.height() * _current.zoom );
 	

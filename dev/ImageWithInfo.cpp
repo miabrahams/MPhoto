@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 double ImageWithInfo::computeFitZoomWithRotation( QSize screenSize, FitZoomMode zoom_mode )
 {
-    if ( image == nullptr ) return 1.0f;
+    if ( isNull() ) return 1.0f;
     double rot = rotation * M_PI / 180.0;
     qreal c = (qreal)cos( rot );
     qreal s = (qreal)sin( rot );
@@ -53,9 +53,9 @@ double ImageWithInfo::computeFitZoomWithRotation( QSize screenSize, FitZoomMode 
 
 double ImageWithInfo::computeFitZoom( QSize screenSize, FitZoomMode zoom_mode )
 {
-    if ( image == nullptr ) return 1.0f;
-    double xz = (double)screenSize.width() / (double)image->width();
-    double yz = (double)screenSize.height() / (double)image->height();
+    if ( isNull() ) return 1.0f;
+    double xz = (double)screenSize.width() / (double)image.width();
+    double yz = (double)screenSize.height() / (double)image.height();
     double z = 1.0;
     switch ( zoom_mode )
     {
