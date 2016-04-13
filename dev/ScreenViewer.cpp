@@ -635,8 +635,7 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
 
 }
 
-void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0,
-	const QTouchEvent::TouchPoint tp1 )
+void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouchEvent::TouchPoint tp1 )
 {
 	// when starting, verify that the two fingers are inside the image
 	if ( !_two_fingers_valid_operation )
@@ -649,23 +648,21 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0,
 			return;
 		}
 	}
+  QLineF currentPos(tp1.pos(), tp0.pos());
+  QLineF startPos(tp1.startPos(), tp0.startPos());
 
-	// compute rotation
-	qreal d_current = QLineF(tp0.pos(), tp1.pos()).length();
-	qreal d_start = QLineF(tp0.startPos(), tp1.startPos()).length();
-	double new_zoom = _initial_zoom * d_current / d_start;
+	// compute zoom
+	double new_zoom = _initial_zoom * currentPos.length() / startPos.length();
 	_limitZoom(new_zoom, _current);
 
-	qreal new_rotation;
 	// compute rotation
+	qreal new_rotation;
 	if (g_config.allow_rotation) {
-	  qreal r =  QLineF( tp1.pos(), tp0.pos() ).angle()
-	  - QLineF( tp1.startPos(), tp0.startPos() ).angle();
-	  new_rotation = _initial_rotation + r;
+      new_rotation = _initial_rotation + currentPos.angle() - startPos.angle();
 	} else {
-	  new_rotation = _initial_rotation;
+      new_rotation = _initial_rotation;
 	}
-	
+
 	// window size need in the formula
 	qreal sw = (qreal)width();
 	qreal sh = (qreal)height();
@@ -702,9 +699,7 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0,
 	_current.zoom = new_zoom;
 	_current.posx = (int)px;
 	_current.posy = (int)py;
-	_current.rotation = new_rotation;
-	if ( _current.rotation > 360.0 ) _current.rotation -= 360.0;
-	if ( _current.rotation < 0 ) _current.rotation += 360.0;
+	_current.rotation = fmod(new_rotation, 360.0);
 }
 
 bool ScreenViewer::onTap( int x, int y )
