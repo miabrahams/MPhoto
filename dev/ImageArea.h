@@ -39,16 +39,16 @@ Q_OBJECT
 private:
 
 	bool _dir_view;
-	ScreenViewer * _image_viewer;
-	ScreenDirectory * _dir_viewer;
-	ScreenBase * _front_viewer;
+    ScreenViewer _image_viewer;
+    ScreenDirectory _dir_viewer;
+    ScreenBase * _front_viewer;
     QList<ScreenBase*> _old_viewers;
 	QTimer _timer;
 	int _hide_cursor_timer;
 
-	QTimer * _enlarge_timer;
-	QTimer * _reduce_timer;
-	QTimer * _fit_timer;
+    QTimer _enlarge_timer;
+    QTimer _reduce_timer;
+    QTimer _fit_timer;
 	double _enlarge_parameter;
 	double _start_zoom;
 	double _start_angle;
@@ -122,7 +122,7 @@ public:
 	{
 		if ( _front_viewer )
 			return _front_viewer;
-		return _dir_view ? (ScreenBase*)_dir_viewer : (ScreenBase*)_image_viewer;
+        return _dir_view ? (ScreenBase*) &_dir_viewer : (ScreenBase*) &_image_viewer;
 	}
 	
 };
