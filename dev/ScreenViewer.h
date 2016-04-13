@@ -45,14 +45,15 @@ private:
     bool _show_ui;
     bool _show_ui_by_tap;
 
-    int _committed_posx,_committed_posy = 0;
-    int _committed_drag_offset = 0, _committed_drag_offset_y = 0;
+    int _committed_posx,_committed_posy = 0; // Position at the beginning of a touch stroke
+    int _committed_drag_offset = 0;
     double _committed_rotation,_committed_zoom;
     bool _allow_drag; // when changing from one picture to another
     bool _allow_zoom,_allow_pan; // only in single touch (or mouse) mode
     bool _two_fingers; // only on multitouch mode when a two finger operation starts
     bool _two_fingers_valid_operation; // if the finger operation is valid (inside the image)
     bool _changing; // currently playing the transition animation from one image to another
+    bool _commit_pan; // Will we pan after a 1-finger drag or treat it as a swipe?
 
     ImageLoadThread _load_thread;
     bool _last_load_thread_idle_state; // last idle state viewed by the timer

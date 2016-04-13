@@ -96,6 +96,7 @@ void ScreenViewer::gotoIndex( int new_index )
         _current.rotation = 0.0;
         _allow_drag = false;
         _drag_offset = 0;
+        _drag_offset_y = 0;
         m_current_index = new_index;
         _reloadAll();
         emit indexChanged( new_index );
@@ -314,18 +315,16 @@ void ScreenViewer::onPaint( QPainter & painter )
         QTransform tr = _getCurrentTransform();
 
         bool alternative_smooth = false;
-#ifdef Q_OS_LINUX
         alternative_smooth = ( _current.rotation == 0.0
                                && _drag_offset == 0
-                               && _current.zoom == fit_zoom
+                               && _current.zoom == ZOOM_FIT
                                && g_config.smooth_images );
-#endif
         if ( alternative_smooth )
         {
             QImage img2 = _current.image->transformed( tr, Qt::SmoothTransformation );
 
             qreal ox = (qreal)( (this->width() - img2.width()) / 2 ) + _current.posx + _drag_offset;
-            qreal oy = (qreal)( (this->height() - img2.height()) / 2 ) + _current.posy;
+            qreal oy = (qreal)( (this->height() - img2.height()) / 2 ) + _current.posy + _drag_offset_y;
             QPointF origin( ox, oy );
             painter.drawImage( origin, img2 );
         } else {
@@ -607,39 +606,49 @@ void ScreenViewer::onPan( const QTouchEvent::TouchPoint & point, bool end )
     }
 
     // We get this once we go too far
-    if ( !_two_fingers && abs(dx) > g_config.drag_sensitivity )
+    if ( !_two_fingers && abs(dx) > g_config.drag_sensitivity
+         || abs(dy) > g_config.drag_sensitivity)
     {
         _allow_drag = true;
-        // _current.recenter();
-        // resetFitZoom( _current );
-        resetFitZoom( _previous );
-        resetFitZoom( _next );
-        // qDebug() << "Resetting stuff during pan";
-        emit startTimer();
     }
 
     if ( _allow_drag )
     {
         _drag_offset = _committed_drag_offset + dx;
-        _drag_offset_y = _committed_drag_offset_y + dy;
+        _drag_offset_y = dy;
         // qDebug() << "Pan" << QTime::currentTime();
         update();
-        if ( end )
+        if ( end && m_action.touchElapsedTime() < 400 )
         {
+
+            if (abs(dx) > g_config.flip_distance) {
+                _current.recenter();
+                resetFitZoom( _current );
+                resetFitZoom( _previous );
+                resetFitZoom( _next );
+                // qDebug() << "Resetting stuff during pan";
+            }
+
             if ( dx < -g_config.flip_distance && m_current_index < m_files.size() - 1
                  && _load_thread.isIdle() )
             {
                 _drag_offset = dx + width();
+                _drag_offset_y = 0; //?
                 _moveForward();
             }
             if ( dx > g_config.flip_distance && m_current_index > 0
                  && _load_thread.isIdle() )
             {
                 _drag_offset = dx - width();
+                _drag_offset_y = 0; //?
                 _moveBack();
             }
             _changing = true;
             emit startTimer();
+        }
+        else if ( end )
+        {
+            _commit_pan = true;
         }
     }
 }
@@ -693,14 +702,10 @@ void  ScreenViewer::onTwoFingers( const QTouchEvent::TouchPoint tp0, const QTouc
     qreal py = yt1p - sh/2 - (x1*sinb + y1*cosb) * new_zoom;
 
     /*
-      printf("Old: p=%d,%d rot=%d scale=%.2lf\n", _initial_posx,_initial_posy,
-      (int)_initial_rotation, _initial_zoom);
-      printf("New: p=%d,%d rot=%d scale=%.2lf\n", (int)px,(int)py,
-      (int)new_rotation, new_zoom);
-      printf("Touch1=%d,%d Touch1p=%d,%d Image_touch=%d,%d\n",
-      (int)xt1,(int)yt1, (int)xt1p, (int)yt1p, (int)x1, (int)y1 );
-      printf("Image_size=%d,%d Screen_size=%d,%d Alpha=%d\n",
-      (int)w, (int)h, (int)sw, (int)sh, (int)r);
+      printf("Old: p=%d,%d rot=%d scale=%.2lf\n", _initial_posx,_initial_posy,(int)_initial_rotation, _initial_zoom);
+      printf("New: p=%d,%d rot=%d scale=%.2lf\n", (int)px,(int)py,(int)new_rotation, new_zoom);
+      printf("Touch1=%d,%d Touch1p=%d,%d Image_touch=%d,%d\n", (int)xt1,(int)yt1, (int)xt1p, (int)yt1p, (int)x1, (int)y1 );
+      printf("Image_size=%d,%d Screen_size=%d,%d Alpha=%d\n", (int)w, (int)h, (int)sw, (int)sh, (int)r);
       printf("=====================================================\n");
     */
 
@@ -760,9 +765,8 @@ void ScreenViewer::onMousePressed( QEvent * event )
         return;
 
     _committed_posx = _current.posx;
-    _committed_posy = _current.posy;
+    _committed_posy = _current.posy + _drag_offset_y;
     _committed_drag_offset = _drag_offset;
-    _committed_drag_offset_y = _drag_offset_y;
     _allow_drag = false;
     _allow_zoom = false;
     _allow_pan = false;
@@ -1250,13 +1254,14 @@ void ScreenViewer::_limitPan( void )
 void ScreenViewer::_resetUserActionsParameters( void )
 {
     _drag_offset = 0;
+    _drag_offset_y = 0;
     _committed_rotation = 0.0;
     _committed_zoom = 0.0;
 
     _mouse_start_x = _mouse_start_y = 0;
     _mouse_drag = false;
 
-    _committed_posx = _committed_posy = _committed_drag_offset = _committed_drag_offset_y = 0;
+    _committed_posx = _committed_posy = _committed_drag_offset = 0;
     _allow_zoom = _allow_pan = _allow_drag = false;
     _changing = false;
     _two_fingers = _two_fingers_valid_operation = false;
@@ -1267,10 +1272,31 @@ void ScreenViewer::_resetUserActionsParameters( void )
 
 void ScreenViewer::commitTouchParams( void )
 {
+    if (_commit_pan) {
+        _current.posx = _current.posx + _drag_offset;
+        _drag_offset = 0;
+        _committed_drag_offset = 0;
+    } else {
+        _committed_drag_offset = _drag_offset;
+    }
+
+    // Always commit movements in Y direction.
+    _current.posy = _current.posy + _drag_offset_y;
+    _drag_offset_y = 0;
+
     _committed_posx = _current.posx;
-    _committed_posy = _current.posy + _drag_offset_y;
-    _committed_drag_offset = _drag_offset;
-    _committed_drag_offset_y = 0;
+    _committed_posy = _current.posy;
+
+    /*
+    qDebug() << "_drag_offset =" << _drag_offset <<
+                " _drag_offset_y =" << _drag_offset_y <<
+                " _current.posx =" << _current.posx <<
+                " _current.posy =" << _current.posy <<
+                " _commited_posx =" << _committed_posx <<
+                " _commited_posy =" << _committed_posy;
+    */
+
+
     _committed_zoom = _current.zoom;
     _committed_rotation = _current.rotation;
     _allow_zoom = false;
@@ -1278,6 +1304,7 @@ void ScreenViewer::commitTouchParams( void )
     _allow_drag = false;
     _two_fingers = false;
     _two_fingers_valid_operation = false;
+    _commit_pan = false;
 
 }
 

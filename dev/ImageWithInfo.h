@@ -56,13 +56,6 @@ public:
         return (image == nullptr);
     }
 
-    inline void setZoom( double f )
-    {
-        zoom = f;
-        rotation = 0.0;
-        posx = posy = 0;
-    }
-
     inline int width( void )
     {
         return image != NULL ? image->width() : 0;
