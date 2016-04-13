@@ -49,9 +49,6 @@ ScreenViewer::~ScreenViewer()
 {
 	_load_thread.stopThread();
 	_load_thread.wait();
-	_current.free();
-	_next.free();
-	_previous.free();
 }
 
 /*******************************************************************************
@@ -1110,19 +1107,23 @@ void ScreenViewer::onTimer( void )
 
 void  ScreenViewer::loadImage( int index, ImageWithInfo &i )
 {
+    // Warning: breaking encapsulation here.
+    delete i.image;
+    delete i.small_image;
+
     i.image = NULL;
     i.zoom = 1.0;
     if ( index < 0 || index >= m_files.size() )
 		return;
 
-	ImageLoadItem ili;
+    ImageLoadItem ili;
     ili.name = m_files[index];
     ili.destination = &i.image;
-	ili.w = width();
-	ili.h = height();
+    ili.w = width();
+    ili.h = height();
     i.zoom = 0.0;
-	ili.force_fit_in_size = false;
-	_load_thread.addLoadImage(ili);
+    ili.force_fit_in_size = false;
+    _load_thread.addLoadImage(ili);
 }
 
 void ScreenViewer::resetFitZoom( ImageWithInfo &i, FitZoomMode zoom_mode )
@@ -1283,15 +1284,10 @@ void ScreenViewer::_resetTouchParams( void )
 
 void ScreenViewer::_reloadAll( void )
 {
-	// wait for load thread to stop
-	// (it may still have pointers to the images)
-	_load_thread.clear();
-	_load_thread.waitUntilIdle();
-
-	// delete old variables
-	_previous.free();
-	_current.free();
-	_next.free();
+    // wait for load thread to stop
+    // (it may still have pointers to the images)
+    _load_thread.clear();
+    _load_thread.waitUntilIdle();
 
     loadImage( m_current_index,   _current);
     loadImage( m_current_index-1, _previous);
@@ -1300,8 +1296,7 @@ void ScreenViewer::_reloadAll( void )
 
 void ScreenViewer::_moveForward( void )
 {
-	_previous.free();
-	m_current_index++;
+    m_current_index++;
     _current.recenter();
 
     _previous = _current;
@@ -1313,8 +1308,7 @@ void ScreenViewer::_moveForward( void )
 
 void ScreenViewer::_moveBack( void )
 {
-	_next.free();
-	m_current_index--;
+    m_current_index--;
     _current.recenter();
 
     _next = _current;
@@ -1424,8 +1418,7 @@ void ScreenViewer::_deleteCurrentFile( void )
 	// remove file from vector
 	m_files.removeAt(m_current_index);
 
-	// update pointers and load new images
-	_current.free();
+  // Load new images
 	if ( m_files.size() >= 0 )
 	{
                 if ( m_current_index == m_files.size() )

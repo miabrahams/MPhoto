@@ -23,6 +23,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+ImageWithInfo::~ImageWithInfo()
+{
+    delete image;
+    delete small_image;
+}
+
+ImageWithInfo& ImageWithInfo::operator=(ImageWithInfo &rhs) {
+    if (this == &rhs)
+        return *this;
+
+    // Move images
+    delete image;
+    delete small_image;
+    image = rhs.image;
+    small_image = rhs.small_image;
+    rhs.image = nullptr;
+    rhs.small_image = nullptr;
+
+    // Copy numerical values
+    zoom = rhs.zoom;
+    posx = rhs.posx;
+    posy = rhs.posy;
+    rotation = rhs.rotation;
+
+    return *this;
+}
+
 double ImageWithInfo::computeFitZoomWithRotation( QSize screenSize, FitZoomMode zoom_mode )
 {
     if ( isNull() ) return 1.0f;
@@ -54,8 +81,8 @@ double ImageWithInfo::computeFitZoomWithRotation( QSize screenSize, FitZoomMode 
 double ImageWithInfo::computeFitZoom( QSize screenSize, FitZoomMode zoom_mode )
 {
     if ( isNull() ) return 1.0f;
-    double xz = (double)screenSize.width() / (double)image.width();
-    double yz = (double)screenSize.height() / (double)image.height();
+    double xz = (double)screenSize.width() / (double)image->width();
+    double yz = (double)screenSize.height() / (double)image->height();
     double z = 1.0;
     switch ( zoom_mode )
     {

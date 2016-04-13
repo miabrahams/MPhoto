@@ -43,18 +43,17 @@ public:
     int posy = 0;
     double rotation = 0.0;
 
-    inline void free( void )
-    {
-        delete image;
-        delete small_image;
-        clear();
-    }
-
     inline void clear( void )
     {
         image = small_image = 0;
         zoom = 1.0;
         recenter();
+    }
+
+
+    inline bool isNull()
+    {
+        return (image == nullptr);
     }
 
     inline void setZoom( double f )
@@ -80,12 +79,14 @@ public:
         rotation = 0;
     }
 
+    ImageWithInfo& operator=(ImageWithInfo &rhs);
 
     double computeFitZoomWithRotation( QSize screenSize, FitZoomMode zoom_mode = ZOOM_FIT );
     double computeFitZoom( QSize screenSize, FitZoomMode zoom_mode = ZOOM_FIT );
     void rotate(int degrees, QSize screenSize);
     void rotateLeft(QSize screenSize);
     void rotateRight(QSize screenSize);
+    ~ImageWithInfo();
 };
 
 #endif
