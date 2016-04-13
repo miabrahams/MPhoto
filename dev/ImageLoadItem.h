@@ -26,18 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 struct ImageLoadItem
 {
 	QString name;
-	QImage ** destination;
-	int w,h;
-	bool force_fit_in_size;
-	int priority;
-	
-	inline ImageLoadItem( void )
-	{
-                w = h = 0;
-                destination = NULL;
-                priority = 0;
-                force_fit_in_size = false;
-	}
+    QImage ** destination = nullptr;
+    int w = 0;
+    int h = 0;
+    bool force_fit_in_size = false;
+    int priority = 0;
 };
 
 #endif // IMAGELOADITEM_H
